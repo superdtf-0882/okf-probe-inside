@@ -1,0 +1,8 @@
+{
+  "name": "okf-probe",
+  "private": true,
+  "description": "Throwaway target for the authority probe (OKF-TOGAF#219). Nothing real here.",
+  "scripts": {
+    "build": "node scripts/discover.js"
+  }
+}
