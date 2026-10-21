@@ -1,0 +1,4 @@
+{
+  "serve_decision": true,
+  "why": "The throwaway target serves its decision record; a live site never does (583-CC)."
+}

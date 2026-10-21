@@ -1,0 +1,783 @@
+{
+ "source": "superdtf-0882/OKF-TOGAF:corpus/authority.md",
+ "revision": "f5e5029893ab77b153953848725a8418035a3e67",
+ "actor": "AUTH-ACTOR-CC",
+ "action": "AUTH-ACT-PUSH",
+ "repository": "AUTH-SURF-PROBE",
+ "rows": [
+  {
+   "id": "AUTH-ACTOR-OWNER",
+   "title": "David, the owner",
+   "relation": "Actor",
+   "role": "ROLE-OWNER",
+   "source": "CHARTER-OWNER"
+  },
+  {
+   "id": "AUTH-ACTOR-CC",
+   "title": "CC, the execution role",
+   "relation": "Actor",
+   "role": "ROLE-CC",
+   "source": "CHARTER-CC"
+  },
+  {
+   "id": "AUTH-ACTOR-DT2",
+   "title": "DT2, the provisioned architecture role",
+   "relation": "Actor",
+   "role": "ROLE-DT",
+   "occupant": "DT2",
+   "source": "CHARTER-DT"
+  },
+  {
+   "id": "AUTH-ACTOR-DTOG",
+   "title": "DTOG, the original architecture role",
+   "relation": "Actor",
+   "role": "ROLE-DTOG",
+   "source": "CHARTER-DTOG"
+  },
+  {
+   "id": "AUTH-TIER-OWNER",
+   "title": "The owner acts in the owner tier",
+   "relation": "Tier",
+   "actor": "AUTH-ACTOR-OWNER",
+   "tier": "owner",
+   "source": "CHARTER-OWNER"
+  },
+  {
+   "id": "AUTH-TIER-CC-EXECUTOR",
+   "title": "CC acts in the executor tier",
+   "relation": "Tier",
+   "actor": "AUTH-ACTOR-CC",
+   "tier": "executor",
+   "source": "CHARTER-CC"
+  },
+  {
+   "id": "AUTH-TIER-DT2-DRAFTER",
+   "title": "DT2 drafts",
+   "relation": "Tier",
+   "actor": "AUTH-ACTOR-DT2",
+   "tier": "drafter",
+   "source": "CHARTER-DT"
+  },
+  {
+   "id": "AUTH-TIER-DT2-REVIEWER",
+   "title": "DT2 reviews",
+   "relation": "Tier",
+   "actor": "AUTH-ACTOR-DT2",
+   "tier": "reviewer",
+   "source": "CHARTER-DT"
+  },
+  {
+   "id": "AUTH-TIER-DTOG-DRAFTER",
+   "title": "DTOG drafts",
+   "relation": "Tier",
+   "actor": "AUTH-ACTOR-DTOG",
+   "tier": "drafter",
+   "source": "CHARTER-DTOG"
+  },
+  {
+   "id": "AUTH-ACT-READ",
+   "title": "Read",
+   "relation": "Action",
+   "kind": "read",
+   "irreversible": false,
+   "source": "briefs/2026-10-01-svm-tranche-3/263-DT2-d7-plan-trace.md"
+  },
+  {
+   "id": "AUTH-ACT-PUSH",
+   "title": "Push to a repository",
+   "relation": "Action",
+   "kind": "write",
+   "irreversible": false,
+   "source": "briefs/2026-10-01-svm-tranche-3/DTOG-d7-plan.md"
+  },
+  {
+   "id": "AUTH-ACT-CONFIGURE",
+   "title": "Change a security or permission setting",
+   "relation": "Action",
+   "kind": "configure",
+   "irreversible": false,
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-SURF-CORPUS",
+   "title": "The corpus repository, OKF-TOGAF",
+   "relation": "Surface",
+   "cites": "A21",
+   "party": "practice",
+   "source": "A21"
+  },
+  {
+   "id": "AUTH-SURF-SITE",
+   "title": "The maturity models site, aimaturitymodels.com",
+   "relation": "Surface",
+   "cites": "A13",
+   "party": "practice",
+   "source": "A13"
+  },
+  {
+   "id": "AUTH-SURF-SUPPLIER",
+   "title": "The market-intelligence supplier's repository",
+   "relation": "Surface",
+   "cites": "A18",
+   "party": "outside",
+   "source": "AC-013"
+  },
+  {
+   "id": "AUTH-SURF-SETTINGS-PROJECT",
+   "title": "The corpus repository's Claude Code settings",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": ".claude/settings.json",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-SURF-SETTINGS-LOCAL",
+   "title": "The corpus repository's local Claude Code settings",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": ".claude/settings.local.json",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-SURF-SETTINGS-USER",
+   "title": "The owner's user-level Claude Code settings, in no repository",
+   "relation": "Surface",
+   "path": "~/.claude/settings.json",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-SURF-PLANE-SHEET",
+   "title": "The authority sheet",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "corpus/authority.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/570-CC-219-piece1-built.md"
+  },
+  {
+   "id": "AUTH-SURF-PLANE-RULES",
+   "title": "The generated rule file",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "tools/generated/authority.dl",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/570-CC-219-piece1-built.md"
+  },
+  {
+   "id": "AUTH-SURF-PLANE-LIB",
+   "title": "The authority checks",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "tools/lib/authority.js",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/570-CC-219-piece1-built.md"
+  },
+  {
+   "id": "AUTH-SURF-PLANE-EVALUATORS",
+   "title": "The authority libraries: the checks, the facts, both evaluators and the held-out cases, by one pattern",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "tools/lib/authority*.js",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/588-CC-plane-evaluators.md"
+  },
+  {
+   "id": "AUTH-SURF-PLANE-TOOL",
+   "title": "The authority tool",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "tools/authority.js",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/570-CC-219-piece1-built.md"
+  },
+  {
+   "id": "AUTH-SURF-CHARTER-OWNER",
+   "title": "The owner's charter",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "spec/charter-owner.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-SURF-CHARTER-CC",
+   "title": "CC's charter",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "spec/charter-cc.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-SURF-CHARTER-DT",
+   "title": "DT's charter",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "spec/charter-dt.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-SURF-CHARTER-DTOG",
+   "title": "DTOG's charter",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "spec/charter-dtog.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-SURF-CHARTER-TEMPLATE",
+   "title": "The charter template",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "spec/charter-template.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-SURF-RULES",
+   "title": "The Rules",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "corpus/rules.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-SURF-CONTRACTS",
+   "title": "The architecture contracts",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "corpus/architecture_contracts.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-SURF-ROLES",
+   "title": "The roles register",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "corpus/roles.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-SURF-BUNDLE-SPEC",
+   "title": "The bundle spec",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "spec/ea-okf-bundle-spec.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-SURF-HOOKS",
+   "title": "The corpus repository's hooks",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "tools/hooks/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-SURF-SITE-GATE",
+   "title": "The site's Work Item deploy gate",
+   "relation": "Surface",
+   "cites": "A13",
+   "path": "scripts/work-item-gate.js",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-SURF-CLEARANCE-LIB",
+   "title": "The clearance library the gate and the filing check call",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "tools/lib/clearance.js",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/587-CC-probe-rows.md"
+  },
+  {
+   "id": "AUTH-SURF-PROBE",
+   "title": "The standing probe target, okf-probe-inside",
+   "relation": "Surface",
+   "cites": "A23",
+   "party": "practice",
+   "source": "A23"
+  },
+  {
+   "id": "AUTH-SURF-PROBE-SETTINGS",
+   "title": "The probe's stand-in for the settings class",
+   "relation": "Surface",
+   "cites": "A23",
+   "path": ".claude/settings.json",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/587-CC-probe-rows.md"
+  },
+  {
+   "id": "AUTH-SURF-PROBE-GATE",
+   "title": "The probe's deploy gate, its stand-in for the plane class",
+   "relation": "Surface",
+   "cites": "A23",
+   "path": "gate/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/587-CC-probe-rows.md"
+  },
+  {
+   "id": "AUTH-SURF-PROBE-SPEC",
+   "title": "The probe's stand-in for the ratified instruments",
+   "relation": "Surface",
+   "cites": "A23",
+   "path": "spec/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/587-CC-probe-rows.md"
+  },
+  {
+   "id": "AUTH-SURF-SPEC",
+   "title": "The spec folder, every file under it",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "spec/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/579-CC-219-piece4-decided.md"
+  },
+  {
+   "id": "AUTH-SURF-STANDARDS",
+   "title": "The standards register",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "corpus/standards.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/579-CC-219-piece4-decided.md"
+  },
+  {
+   "id": "AUTH-SURF-PRINCIPLES",
+   "title": "The principles",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "corpus/principles.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/579-CC-219-piece4-decided.md"
+  },
+  {
+   "id": "AUTH-SURF-CONSTRAINTS",
+   "title": "The constraints",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "corpus/constraints.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/579-CC-219-piece4-decided.md"
+  },
+  {
+   "id": "AUTH-SURF-INTENTS",
+   "title": "The intent register",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "corpus/intent_register.md",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/579-CC-219-piece4-decided.md"
+  },
+  {
+   "id": "AUTH-CLASS-RATIFIED",
+   "title": "The owner's ratified instruments beyond the plane: every file under spec/, and the standards, principles, constraints and intent register",
+   "relation": "Class",
+   "members": [
+    "spec/",
+    "corpus/standards.md",
+    "corpus/principles.md",
+    "corpus/constraints.md",
+    "corpus/intent_register.md"
+   ],
+   "source": "briefs/2026-10-01-svm-tranche-3/579-CC-219-piece4-decided.md"
+  },
+  {
+   "id": "AUTH-CLASS-SETTINGS",
+   "title": "Security and permission settings",
+   "relation": "Class",
+   "members": [
+    ".claude/settings.json",
+    ".claude/settings.local.json",
+    "~/.claude/settings.json"
+   ],
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-CLASS-PLANE",
+   "title": "The authority plane: its own files, the instruments its rows cite, and every gate and hook",
+   "relation": "Class",
+   "members": [
+    "corpus/authority.md",
+    "tools/generated/authority.dl",
+    "tools/lib/authority*.js",
+    "tools/authority.js",
+    "spec/charter-*.md",
+    "corpus/rules.md",
+    "corpus/architecture_contracts.md",
+    "corpus/roles.md",
+    "spec/ea-okf-bundle-spec.md",
+    "tools/hooks/",
+    "AUTH-SURF-SITE-GATE",
+    "tools/lib/clearance.js",
+    "AUTH-SURF-PROBE-GATE"
+   ],
+   "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
+  },
+  {
+   "id": "AUTH-CLASS-PRACTICE-REPOS",
+   "title": "The practice's repositories",
+   "relation": "Class",
+   "members": [
+    "AUTH-SURF-CORPUS",
+    "AUTH-SURF-SITE"
+   ],
+   "source": "briefs/2026-10-01-svm-tranche-3/570-CC-219-piece1-built.md"
+  },
+  {
+   "id": "AUTH-FORBID-SETTINGS-EXECUTOR",
+   "title": "No executor changes a security or permission setting, even on the owner's word",
+   "relation": "Forbidden",
+   "tier": "executor",
+   "action": "AUTH-ACT-CONFIGURE",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SETTINGS-DRAFTER",
+   "title": "No drafter changes a security or permission setting, even on the owner's word",
+   "relation": "Forbidden",
+   "tier": "drafter",
+   "action": "AUTH-ACT-CONFIGURE",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SETTINGS-REVIEWER",
+   "title": "No reviewer changes a security or permission setting, even on the owner's word",
+   "relation": "Forbidden",
+   "tier": "reviewer",
+   "action": "AUTH-ACT-CONFIGURE",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SETTINGS-PUSH-EXECUTOR",
+   "title": "No executor pushes a change to a security or permission setting, even on the owner's word",
+   "relation": "Forbidden",
+   "tier": "executor",
+   "action": "AUTH-ACT-PUSH",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SETTINGS-PUSH-DRAFTER",
+   "title": "No drafter pushes a change to a security or permission setting, even on the owner's word",
+   "relation": "Forbidden",
+   "tier": "drafter",
+   "action": "AUTH-ACT-PUSH",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SETTINGS-PUSH-REVIEWER",
+   "title": "No reviewer pushes a change to a security or permission setting, even on the owner's word",
+   "relation": "Forbidden",
+   "tier": "reviewer",
+   "action": "AUTH-ACT-PUSH",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SUPPLIER-EXECUTOR",
+   "title": "No executor writes to the supplier's repository",
+   "relation": "Forbidden",
+   "tier": "executor",
+   "action": "AUTH-ACT-PUSH",
+   "surface": "AUTH-SURF-SUPPLIER",
+   "source": "AC-013"
+  },
+  {
+   "id": "AUTH-FORBID-SUPPLIER-DRAFTER",
+   "title": "No drafter writes to the supplier's repository",
+   "relation": "Forbidden",
+   "tier": "drafter",
+   "action": "AUTH-ACT-PUSH",
+   "surface": "AUTH-SURF-SUPPLIER",
+   "source": "AC-013"
+  },
+  {
+   "id": "AUTH-FORBID-SUPPLIER-REVIEWER",
+   "title": "No reviewer writes to the supplier's repository",
+   "relation": "Forbidden",
+   "tier": "reviewer",
+   "action": "AUTH-ACT-PUSH",
+   "surface": "AUTH-SURF-SUPPLIER",
+   "source": "AC-013"
+  },
+  {
+   "id": "AUTH-FORBID-DT2-PUSH",
+   "title": "DT's role pushes to none of the practice's repositories",
+   "relation": "Forbidden",
+   "actor": "AUTH-ACTOR-DT2",
+   "action": "AUTH-ACT-PUSH",
+   "class": "AUTH-CLASS-PRACTICE-REPOS",
+   "source": "RULE-5"
+  },
+  {
+   "id": "AUTH-LINE-SUPPLIER-READ",
+   "title": "CC reads the supplier's current state from GitHub",
+   "relation": "Line",
+   "text": "Treat the supplier as a paid third party: CC reads its current state from GitHub when needed and records the version and date read; the check reports against AC-013's terms and never blocks; shortfalls go to the supplier as a list, not as direction on its work; a supplier that keeps falling short is replaced -- David Facer 10/19/2026",
+   "date": "2026-10-19",
+   "given_to": "AUTH-ACTOR-CC",
+   "grants": [
+    {
+     "action": "AUTH-ACT-READ",
+     "surface": "AUTH-SURF-SUPPLIER"
+    }
+   ],
+   "excludes": [],
+   "source": "briefs/2026-10-01-svm-tranche-3/537-CC-d1-d4-readings.md"
+  },
+  {
+   "id": "AUTH-LINE-STANDING",
+   "title": "The owner's standing line: routine changes ship once DT2's review clears the commit that ships",
+   "relation": "Line",
+   "text": "Routine changes ship once DT2's review clears the commit that ships; this never covers anything irreversible, security, permission or account settings, credentials, a new public claim about a person or an organization, or the authority plane itself -- David Facer 10/20/2026",
+   "date": "2026-10-20",
+   "given_to": "AUTH-ACTOR-CC",
+   "grants": [
+    {
+     "action": "AUTH-ACT-PUSH",
+     "surface": "AUTH-SURF-CORPUS"
+    },
+    {
+     "action": "AUTH-ACT-PUSH",
+     "surface": "AUTH-SURF-SITE"
+    },
+    {
+     "action": "AUTH-ACT-PUSH",
+     "surface": "AUTH-SURF-PROBE"
+    }
+   ],
+   "excludes": [
+    "AUTH-CLASS-SETTINGS",
+    "AUTH-CLASS-PLANE",
+    "AUTH-CLASS-RATIFIED"
+   ],
+   "source": "briefs/2026-10-01-svm-tranche-3/574-CC-219-standing-line.md"
+  },
+  {
+   "id": "AUTH-REQ-SITE-WORKITEM",
+   "title": "A push to the site needs a Work-Item line",
+   "relation": "Requires",
+   "action": "AUTH-ACT-PUSH",
+   "surface": "AUTH-SURF-SITE",
+   "condition": "a Work-Item line naming an open Work Item, in the commit message",
+   "source": "A13"
+  },
+  {
+   "id": "AUTH-REQ-SITE-LINE",
+   "title": "A push to the site needs the owner's line for that push",
+   "relation": "Requires",
+   "action": "AUTH-ACT-PUSH",
+   "surface": "AUTH-SURF-SITE",
+   "condition": "the owner's line for that push, in the act's record",
+   "source": "CHARTER-CC"
+  },
+  {
+   "id": "AUTH-REQ-CORPUS-LINE",
+   "title": "A push to the corpus needs the owner's line for that push, until GitHub refuses an uncleared push there",
+   "relation": "Requires",
+   "action": "AUTH-ACT-PUSH",
+   "surface": "AUTH-SURF-CORPUS",
+   "condition": "the owner's line for that push, in the act's record, until piece 7's push rule is proved on the corpus",
+   "source": "briefs/2026-10-01-svm-tranche-3/579-CC-219-piece4-decided.md"
+  },
+  {
+   "id": "AUTH-COVERS-CR023",
+   "title": "DT's read-only credential covers a push to the corpus repository",
+   "relation": "Covers",
+   "control": "RULE-5",
+   "action": "AUTH-ACT-PUSH",
+   "surface": "AUTH-SURF-CORPUS",
+   "source": "RULE-5"
+  },
+  {
+   "id": "AUTH-COVERS-RING3",
+   "title": "The Work Item deploy gate covers a push to the site",
+   "relation": "Covers",
+   "control": "TC-55",
+   "action": "AUTH-ACT-PUSH",
+   "surface": "AUTH-SURF-SITE",
+   "source": "A13"
+  },
+  {
+   "id": "AUTH-NOTMED-GATE-SELF",
+   "title": "At deploy, a change to the gate is judged by the changed gate",
+   "relation": "NotMediated",
+   "point": "the deploy gate",
+   "path": "the gate's own files, in the repository it guards",
+   "reason": "The gate lives in the repository it guards and the build runs the new gate, so a gate that dropped a check would pass its own change. The filing act rebuilds every commit touching the gate with its parent's gate and records whether that one would have refused; the commit that installs a gate has no parent gate and is recorded as ungated by construction, its clearance and Owner-Line checked after the fact. Lifts when piece 7's rule holds the gate's files.",
+   "decision": "briefs/2026-10-01-svm-tranche-3/282-DT2-gate-points.md",
+   "source": "briefs/2026-10-01-svm-tranche-3/282-DT2-gate-points.md"
+  },
+  {
+   "id": "AUTH-NOTMED-GATE-WIRING",
+   "title": "At deploy, wiring that stops the gate or ignores its refusal is past any gate",
+   "relation": "NotMediated",
+   "point": "the deploy gate",
+   "path": "the build's wiring: package.json's build scripts, vercel.json's build settings, and the hosting project's own build command",
+   "reason": "The gate refuses a change to the wiring without Owner-Line only where the changed wiring still runs the gate and honours its exit. Wiring that stops the gate, or ignores its refusal, is never judged by it; nor is the hosting project's own build command, the owner's account setting, forbidden to CC and out of the rows' reach. The filing act checks every deployed commit's wiring after the fact and records any other as gate not run.",
+   "decision": "briefs/2026-10-01-svm-tranche-3/283-DT2-build-wiring.md",
+   "source": "briefs/2026-10-01-svm-tranche-3/283-DT2-build-wiring.md"
+  },
+  {
+   "id": "AUTH-NOTMED-HISTORY",
+   "title": "At deploy, history rewritten before the cleared base is not seen",
+   "relation": "NotMediated",
+   "point": "the deploy gate",
+   "path": "the branch's history before the clearance's base",
+   "reason": "The build sees the commit it ships and that commit's history. Every file changed from the cleared base is checked, and a base not in that history is refused; what the branch held before a force-push is not in the build's copy, so a non-fast-forward is not seen there. Lifts when piece 7's rule refuses a non-fast-forward at the push.",
+   "decision": "briefs/2026-10-01-svm-tranche-3/577-CC-219-piece4-plan.md",
+   "source": "briefs/2026-10-01-svm-tranche-3/577-CC-219-piece4-plan.md"
+  },
+  {
+   "id": "AUTH-RULE-UNDER-SELF",
+   "title": "A surface is under itself",
+   "relation": "Rule",
+   "head": "Under(s,s)",
+   "body": [
+    "Surface(s)"
+   ],
+   "stratum": 1,
+   "source": "briefs/2026-10-01-svm-tranche-3/573-CC-219-within-built.md"
+  },
+  {
+   "id": "AUTH-RULE-UNDER-WITHIN",
+   "title": "A file is under the repository it is within",
+   "relation": "Rule",
+   "head": "Under(s,r)",
+   "body": [
+    "Within(s,r)"
+   ],
+   "stratum": 1,
+   "source": "briefs/2026-10-01-svm-tranche-3/573-CC-219-within-built.md"
+  },
+  {
+   "id": "AUTH-RULE-INCLASS",
+   "title": "A surface is in a class if it is under one of the class's members",
+   "relation": "Rule",
+   "head": "InClass(s,c)",
+   "body": [
+    "Member(m,c)",
+    "Under(s,m)"
+   ],
+   "stratum": 1,
+   "source": "briefs/2026-10-01-svm-tranche-3/573-CC-219-within-built.md"
+  },
+  {
+   "id": "AUTH-RULE-BARRED-TIER",
+   "title": "An actor is barred from what its tier is forbidden on a surface, and on every file under it",
+   "relation": "Rule",
+   "head": "Barred(a,k,s)",
+   "body": [
+    "Tier(a,t)",
+    "Forbidden(t,k,r)",
+    "Under(s,r)"
+   ],
+   "stratum": 1,
+   "source": "briefs/2026-10-01-svm-tranche-3/573-CC-219-within-built.md"
+  },
+  {
+   "id": "AUTH-RULE-BARRED-ACTOR",
+   "title": "An actor is barred from what it is itself forbidden on a surface, and on every file under it",
+   "relation": "Rule",
+   "head": "Barred(a,k,s)",
+   "body": [
+    "Forbidden(a,k,r)",
+    "Under(s,r)"
+   ],
+   "stratum": 1,
+   "source": "briefs/2026-10-01-svm-tranche-3/573-CC-219-within-built.md"
+  },
+  {
+   "id": "AUTH-RULE-BARRED-TIER-CLASS",
+   "title": "An actor is barred from what its tier is forbidden on a class",
+   "relation": "Rule",
+   "head": "Barred(a,k,s)",
+   "body": [
+    "Tier(a,t)",
+    "ForbiddenClass(t,k,c)",
+    "InClass(s,c)"
+   ],
+   "stratum": 1,
+   "source": "briefs/2026-10-01-svm-tranche-3/570-CC-219-piece1-built.md"
+  },
+  {
+   "id": "AUTH-RULE-BARRED-ACTOR-CLASS",
+   "title": "An actor is barred from what it is itself forbidden on a class",
+   "relation": "Rule",
+   "head": "Barred(a,k,s)",
+   "body": [
+    "ForbiddenClass(a,k,c)",
+    "InClass(s,c)"
+   ],
+   "stratum": 1,
+   "source": "briefs/2026-10-01-svm-tranche-3/570-CC-219-piece1-built.md"
+  },
+  {
+   "id": "AUTH-RULE-EXCLUDED",
+   "title": "A standing line never covers a surface in a class it excludes",
+   "relation": "Rule",
+   "head": "Excluded(l,s)",
+   "body": [
+    "Excludes(l,c)",
+    "InClass(s,c)"
+   ],
+   "stratum": 1,
+   "source": "briefs/2026-10-01-svm-tranche-3/570-CC-219-piece1-built.md"
+  },
+  {
+   "id": "AUTH-RULE-AUTHORIZED-MAY",
+   "title": "An actor may take an act its tier has a standing right to, on a surface and every file under it",
+   "relation": "Rule",
+   "head": "Authorized(a,k,s)",
+   "body": [
+    "Tier(a,t)",
+    "May(t,k,r)",
+    "Under(s,r)"
+   ],
+   "stratum": 2,
+   "source": "briefs/2026-10-01-svm-tranche-3/573-CC-219-within-built.md"
+  },
+  {
+   "id": "AUTH-RULE-AUTHORIZED-LINE",
+   "title": "An actor may take an act a standing line grants it, on a surface and every file under it, outside what the line excludes",
+   "relation": "Rule",
+   "head": "Authorized(a,k,s)",
+   "body": [
+    "Line(l,a,k,r)",
+    "Under(s,r)",
+    "not Excluded(l,s)"
+   ],
+   "stratum": 2,
+   "source": "briefs/2026-10-01-svm-tranche-3/573-CC-219-within-built.md"
+  },
+  {
+   "id": "AUTH-RULE-PERMITTED",
+   "title": "An act is permitted when authorized and not barred, whatever line is given",
+   "relation": "Rule",
+   "head": "Permitted(a,k,s)",
+   "body": [
+    "Authorized(a,k,s)",
+    "not Barred(a,k,s)"
+   ],
+   "stratum": 3,
+   "source": "briefs/2026-10-01-svm-tranche-3/263-DT2-d7-plan-trace.md"
+  }
+ ]
+}
