@@ -105,6 +105,11 @@ t('the record names the commit, the store revision, the clearance, the outcome a
 t('the record is the same for the same commit', () => JSON.stringify(decide(input())) === JSON.stringify(decide(input())));
 t('the record names the files it read by count, not by name', () => { const d = decide(input({ changed: () => ['a', 'b'] })); return d.files === 2 && !JSON.stringify(d).includes('"a"'); });
 
+// 284-DT2 note 2: on the real rows, a gate file is refused as excluded, so a
+// change to the evaluators can't quietly empty what the gate looks under.
+t('the real store: a gate file without Owner-Line is refused as excluded', () => { const st = require('./store.json'); const d = decide(input({ store: st, changed: () => ['gate/gate.js'] })); return d.outcome === 'refused' && rules(d).includes('excluded'); });
+t('the real store: the settings stand-in is refused as forbidden, even with Owner-Line', () => { const st = require('./store.json'); const d = decide(input({ store: st, message: msg(cleared(), 'Owner-Line: 590-CC'), changed: () => ['.claude/settings.json'] })); return d.outcome === 'refused' && rules(d).includes('forbidden'); });
+
 let failed = 0;
 console.log('GATE CASES (OKF-TOGAF#219, piece 4)\n');
 for (const [label, fn] of cases) {
