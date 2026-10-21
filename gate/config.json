@@ -1,4 +1,5 @@
 {
   "serve_decision": true,
-  "why": "The throwaway target serves its decision record; a live site never does (583-CC)."
+  "why": "The throwaway target serves its decision record; a live site never does (583-CC).",
+  "attempt": "4b: a change to the gate folder without the owner's line"
 }
