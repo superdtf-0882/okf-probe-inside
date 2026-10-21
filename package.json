@@ -3,7 +3,7 @@
   "private": true,
   "description": "Throwaway target for the authority probe (OKF-TOGAF#219). Nothing real here.",
   "scripts": {
-    "build": "node gate/gate.js && node scripts/discover.js",
+    "build": "node scripts/discover.js",
     "test": "node gate/test.js"
   }
 }
