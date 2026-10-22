@@ -1,5 +1,5 @@
 {
-  "serve_decision": true,
-  "why": "The throwaway target serves its decision record; a live site never does (583-CC).",
-  "attempt": "4b: a change to the gate folder without the owner's line"
+ "mode": "record",
+ "serve_decision": true,
+ "why": "Piece 5 of the recorder plan (628-CC with 308-DT2): the watching mode proved on the throwaway. Set back to refuse after the proof. serve_decision stays as the throwaway had it; record mode serves nothing whatever it says."
 }

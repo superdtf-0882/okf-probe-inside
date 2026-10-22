@@ -110,6 +110,43 @@ t('the record names the files it read by count, not by name', () => { const d = 
 t('the real store: a gate file without Owner-Line is refused as excluded', () => { const st = require('./store.json'); const d = decide(input({ store: st, changed: () => ['gate/gate.js'] })); return d.outcome === 'refused' && rules(d).includes('excluded'); });
 t('the real store: the settings stand-in is refused as forbidden, even with Owner-Line', () => { const st = require('./store.json'); const d = decide(input({ store: st, message: msg(cleared(), 'Owner-Line: 590-CC'), changed: () => ['.claude/settings.json'] })); return d.outcome === 'refused' && rules(d).includes('forbidden'); });
 
+// The watching mode (OKF-TOGAF#219 recorder, 628-CC with 308-DT2's additions):
+// set to "record", the gate writes every decision down and ends the build
+// normally; with no setting, or any other, it refuses exactly as before.
+const gateMod = require('./gate');
+const finish = typeof gateMod.finish === 'function' ? gateMod.finish : null;
+const recD = { gate: 'authority gate, piece 4', commit: HEAD, outcome: 'refused', refusals: [{ rule: 'excluded', detail: 'gate/gate.js' }] };
+const allowD = { gate: 'authority gate, piece 4', commit: HEAD, outcome: 'allowed', refusals: [] };
+t('record mode: a decision it would refuse ends the build normally, written down as would-refuse with its rule', () => {
+  const r = finish({ decision: recD, config: { mode: 'record' } });
+  return r.exitCode === 0 && /^GATE DECISION /.test(r.line) && JSON.parse(r.line.slice(14)).mode === 'record' && JSON.parse(r.line.slice(14)).outcome === 'refused' && /would refuse: excluded: gate\/gate\.js/.test(r.note);
+});
+t('record mode: a gate that cannot decide ends the build normally, written down as could-not-decide with why', () => {
+  const r = finish({ error: new Error('store.json unreadable'), config: { mode: 'record' } });
+  const rec = JSON.parse(r.line.slice(14));
+  return r.exitCode === 0 && rec.mode === 'record' && rec.outcome === 'could-not-decide' && /store\.json unreadable/.test(rec.why);
+});
+t('record mode: it serves nothing on the site, even where the config asks to serve', () => {
+  const r = finish({ decision: allowD, config: { mode: 'record', serve_decision: true } });
+  return r.exitCode === 0 && r.serve === false;
+});
+t('no mode set: it refuses exactly as before, and the line says refuse', () => {
+  const r = finish({ decision: recD, config: {} });
+  return r.exitCode === 1 && JSON.parse(r.line.slice(14)).mode === 'refuse' && /^GATE REFUSED: excluded: gate\/gate\.js/.test(r.note);
+});
+t('no mode set: an allowed decision passes, and the throwaway still serves its record', () => {
+  const r = finish({ decision: allowD, config: { serve_decision: true } });
+  return r.exitCode === 0 && r.serve === true;
+});
+t('a mode it does not know is read as refuse, so a garbled setting cannot stop refusals', () => {
+  const r = finish({ decision: recD, config: { mode: 'Record ' } });
+  return r.exitCode === 1 && JSON.parse(r.line.slice(14)).mode === 'refuse';
+});
+t('refuse mode: a gate that cannot decide still refuses the build', () => {
+  const r = finish({ error: new Error('x'), config: {} });
+  return r.exitCode === 1 && JSON.parse(r.line.slice(14)).outcome === 'could-not-decide';
+});
+
 let failed = 0;
 console.log('GATE CASES (OKF-TOGAF#219, piece 4)\n');
 for (const [label, fn] of cases) {

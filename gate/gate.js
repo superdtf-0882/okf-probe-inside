@@ -22,6 +22,10 @@
 // why the folder is in the plane class and needs the owner's line; a push that
 // skips the build, or a rule outside the build, is piece 7's (GitHub's branch
 // rule); who wrote a clearance is checked when CC files, not here (579-CC).
+// SET TO "record" (config.json's mode) it refuses nothing, so while so set it
+// is a recorder, not a control: the setting lives in this folder, in the plane
+// class; a missing or garbled setting reads as "refuse"; and CC's filing
+// reports a site decision made in refuse mode as a departure (308-DT2).
 'use strict';
 const fs = require('fs');
 const path = require('path');
@@ -113,31 +117,56 @@ function decide(input) {
 function git(...args) { return String(execFileSync('git', args, { stdio: ['ignore', 'pipe', 'pipe'] })).trim(); }
 function tryGit(...args) { try { return git(...args); } catch (e) { return null; } }
 
+// ------------------------------------------------------------- the end of a build
+// The watching mode (OKF-TOGAF#219's recorder, 628-CC with 308-DT2's
+// additions): config.mode "record" writes every decision down, naming its
+// mode, and ends the build normally, serving nothing; any other value, a
+// missing setting included, is "refuse", the gate as proved. A gate that
+// cannot decide is written down as could-not-decide, and refuses in refuse
+// mode as an uncaught error did before.
+function finish({ decision, error, config }) {
+  const mode = config && config.mode === 'record' ? 'record' : 'refuse';
+  const d = error || !decision
+    ? { gate: 'authority gate, piece 4', commit: (decision && decision.commit) || null, outcome: 'could-not-decide', refusals: [], why: String((error && error.message) || error || 'no decision') }
+    : decision;
+  const line = 'GATE DECISION ' + JSON.stringify(Object.assign({}, d, { mode }));
+  const stops = d.outcome !== 'allowed';
+  const why = d.outcome === 'could-not-decide' ? 'could not decide: ' + d.why : (d.refusals || []).map((x) => x.rule + ': ' + x.detail).join(' | ');
+  if (mode === 'record') return { exitCode: 0, line, serve: false, note: stops ? 'GATE RECORDED, would refuse: ' + why : 'GATE RECORDED, would allow' };
+  return { exitCode: stops ? 1 : 0, line, serve: !stops && !!config && config.serve_decision === true, note: stops ? 'GATE REFUSED: ' + why : null };
+}
+
 function main() {
   const root = path.join(__dirname, '..');
-  const sha = tryGit('rev-parse', 'HEAD');
-  let store = null;
-  try { store = JSON.parse(fs.readFileSync(path.join(__dirname, 'store.json'), 'utf8')); } catch (e) { store = null; }
-  const d = sha ? decide({
-    sha,
-    varSha: process.env.VERCEL_GIT_COMMIT_SHA || null,
-    message: tryGit('log', '-1', '--format=%B', sha) || '',
-    tree: tryGit('rev-parse', sha + '^{tree}'),
-    isAncestor: (b) => { try { execFileSync('git', ['merge-base', '--is-ancestor', b, sha], { stdio: 'ignore' }); return true; } catch (e) { return false; } },
-    changed: (b) => { const r = tryGit('diff', '--name-only', '--no-renames', b, sha); return r === null ? null : r.split('\n').filter(Boolean); },
-    fileAt: (rev, p) => { try { return String(execFileSync('git', ['show', rev + ':' + p], { stdio: ['ignore', 'pipe', 'ignore'] })); } catch (e) { return null; } },
-    store,
-  }) : { gate: 'authority gate, piece 4', commit: null, outcome: 'refused', refusals: [{ rule: 'commit', detail: 'no commit checked out' }] };
-  console.log('GATE DECISION ' + JSON.stringify(d));
   let config = {};
   try { config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8')); } catch (e) { config = {}; }
-  // Only the throwaway target serves its record; a live site never does (583-CC).
-  if (d.outcome === 'allowed' && config.serve_decision === true) {
+  let d = null, error = null;
+  try {
+    const sha = tryGit('rev-parse', 'HEAD');
+    let store = null;
+    try { store = JSON.parse(fs.readFileSync(path.join(__dirname, 'store.json'), 'utf8')); } catch (e) { store = null; }
+    d = sha ? decide({
+      sha,
+      varSha: process.env.VERCEL_GIT_COMMIT_SHA || null,
+      message: tryGit('log', '-1', '--format=%B', sha) || '',
+      tree: tryGit('rev-parse', sha + '^{tree}'),
+      isAncestor: (b) => { try { execFileSync('git', ['merge-base', '--is-ancestor', b, sha], { stdio: 'ignore' }); return true; } catch (e) { return false; } },
+      changed: (b) => { const r = tryGit('diff', '--name-only', '--no-renames', b, sha); return r === null ? null : r.split('\n').filter(Boolean); },
+      fileAt: (rev, p) => { try { return String(execFileSync('git', ['show', rev + ':' + p], { stdio: ['ignore', 'pipe', 'ignore'] })); } catch (e) { return null; } },
+      store,
+    }) : { gate: 'authority gate, piece 4', commit: null, outcome: 'refused', refusals: [{ rule: 'commit', detail: 'no commit checked out' }] };
+  } catch (e) { error = e; }
+  const r = finish({ decision: d, error, config });
+  console.log(r.line);
+  // Only the throwaway target serves its record; a live site never does (583-CC),
+  // and the watching mode never does.
+  if (r.serve) {
     fs.mkdirSync(path.join(root, 'public'), { recursive: true });
     fs.writeFileSync(path.join(root, 'public', 'gate-decision.json'), JSON.stringify(d, null, 2) + '\n');
   }
-  if (d.outcome !== 'allowed') { console.error('GATE REFUSED: ' + d.refusals.map((x) => x.rule + ': ' + x.detail).join(' | ')); process.exitCode = 1; }
+  if (r.note) (r.exitCode ? console.error : console.log)(r.note);
+  process.exitCode = r.exitCode;
 }
 
 if (require.main === module) main();
-module.exports = { decide, matches, wiringChanges };
+module.exports = { decide, matches, wiringChanges, finish };
