@@ -1,0 +1,33 @@
+{
+  "note": "The mock world for OKF-TOGAF#234's proof (368-DT2 with 742-CC's corrections), from the owner's test file. No id here is a real record's id. It lives in the gate's folder so a change to it needs the owner's line, as a change to the practice's authority rows does.",
+  "rows": [
+    { "id": "Alice", "title": "Alice", "relation": "Actor", "role": "Publisher" },
+    { "id": "Bob", "title": "Bob", "relation": "Actor", "role": "Drafter" },
+    { "id": "Tier_Alice", "title": "Alice publishes", "relation": "Tier", "actor": "Alice", "tier": "Publisher" },
+    { "id": "Tier_Bob", "title": "Bob drafts", "relation": "Tier", "actor": "Bob", "tier": "Drafter" },
+    { "id": "publish", "title": "publish", "relation": "Action", "kind": "write", "irreversible": false },
+    { "id": "draft", "title": "draft", "relation": "Action", "kind": "write", "irreversible": false },
+    { "id": "Repo_Main", "title": "Repo_Main", "relation": "Surface", "cites": "MockApp_Main", "party": "mock" },
+    { "id": "Repo_Main_Docs", "title": "Repo_Main's documents", "relation": "Surface", "cites": "MockApp_Main", "party": "mock", "path": "main/" },
+    { "id": "Repo_Other", "title": "Repo_Other", "relation": "Surface", "cites": "MockApp_Other", "party": "mock" },
+    { "id": "Repo_Other_Docs", "title": "Repo_Other's documents", "relation": "Surface", "cites": "MockApp_Other", "party": "mock", "path": "other/" },
+    { "id": "May_Publisher_Main", "title": "A publisher may publish to Repo_Main", "relation": "May", "tier": "Publisher", "action": "publish", "surface": "Repo_Main" },
+    { "id": "May_Drafter_Main", "title": "A drafter may draft to Repo_Main", "relation": "May", "tier": "Drafter", "action": "draft", "surface": "Repo_Main" },
+    { "id": "Req_Main_Basis", "title": "Publishing to Repo_Main names its Work Item and its intent", "relation": "Requires", "action": "publish", "surface": "Repo_Main", "condition": "the request names its Work Item and its intent" }
+  ],
+  "kinds": [
+    { "kind": "Doc", "stratum": "S4" },
+    { "kind": "Log", "stratum": "S7" }
+  ],
+  "acts": [
+    { "action": "publish", "surface": "Repo_Main", "stratum": "S4" }
+  ],
+  "intents": [
+    { "id": "INT-MOCK", "title": "Mock Publishing Intent", "stratum": "S0" }
+  ],
+  "records": [
+    { "id": "Doc_Valid", "kind": "Doc", "stratum": "S4", "realizes": ["INT-MOCK"] },
+    { "id": "Doc_Orphan", "kind": "Doc", "stratum": "S4", "realizes": [] },
+    { "id": "Log_Data", "kind": "Log", "stratum": "S7", "realizes": ["INT-MOCK"] }
+  ]
+}

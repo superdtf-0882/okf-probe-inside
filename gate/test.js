@@ -147,8 +147,122 @@ t('refuse mode: a gate that cannot decide still refuses the build', () => {
   return r.exitCode === 1 && JSON.parse(r.line.slice(14)).outcome === 'could-not-decide';
 });
 
+// OKF-TOGAF#234's eleven cases (368-DT2 section 4, with 742-CC's corrections
+// and 369-DT2's order for case 4), on the mock world in world.json. A commit
+// carrying an act names its request file and that request's fingerprint
+// (Request:) and the actor it claims (Actor:). The gate takes the act from the
+// request, decides it against the world as it stands in what ships, binds the
+// shipped content to the fingerprint, and names a failure by its own word.
+// Written before the code (piece 1): every case but 9 fails until piece 4.
+const crypto = require('crypto');
+const WORLD = require('./world.json');
+const sha = (s) => crypto.createHash('sha256').update(String(s).replace(/\r\n/g, '\n')).digest('hex');
+const FP_FIELDS = ['operator', 'role', 'action', 'target', 'surface', 'path', 'work_item', 'intent', 'content'];
+const fingerprint = (q) => sha(JSON.stringify(FP_FIELDS.map((k) => [k, q[k] === undefined ? null : q[k]])));
+const TEXT = { valid: '# Doc_Valid\n\nPublishing serves the mock intent.\n', contra: '# Doc_Valid\n\nNothing should ever be published.\n' };
+const req = (o) => { const q = Object.assign({ operator: 'Alice', role: 'Publisher', action: 'publish', target: 'Doc_Valid', surface: 'Repo_Main', path: 'main/Doc_Valid.md', work_item: 'WI-MOCK-1', intent: 'INT-MOCK', content: sha(TEXT.valid), evaluated: 'permitted' }, o || {}); q.fingerprint = fingerprint(q); return q; };
+const RQ = 'requests/act.json';
+const act = (q, o) => {
+  o = o || {};
+  const files = Object.assign({ [RQ]: JSON.stringify(q), [q.path]: TEXT.valid }, o.files || {});
+  const lines = [cleared()];
+  if (o.actor !== null) lines.push('Actor: ' + (o.actor || q.operator));
+  lines.push('Request: ' + RQ + ' ' + (o.claimed || q.fingerprint));
+  if (o.owner) lines.push('Owner-Line: ' + o.owner);
+  return input({ message: msg(...lines), changed: () => o.changed || [RQ, q.path], world: o.world === undefined ? WORLD : o.world, readShipped: (p) => (Object.prototype.hasOwnProperty.call(files, p) ? files[p] : null) });
+};
+const actOf = (d) => d.act || {};
+const withRows = (extra) => Object.assign({}, WORLD, { rows: WORLD.rows.concat(extra) });
+
+t('234 case 1. Alice publishes a valid document to Repo_Main: permitted, shipped and recorded', () => {
+  const q = req(); const d = decide(act(q)); const a = actOf(d);
+  return d.outcome === 'allowed' && a.condition === 'permitted' && a.operator === 'Alice' && a.actor_claimed === 'Alice'
+    && /^none/.test(a.identity) && a.fingerprint === q.fingerprint && a.request === RQ
+    && [].concat(a.rows).includes('May_Publisher_Main') && [].concat(a.requires).includes('Req_Main_Basis');
+});
+t('234 case 2. Bob, a drafter, publishes: unactionable, no path', () => {
+  const d = decide(act(req({ operator: 'Bob', role: 'Drafter' })));
+  return d.outcome === 'refused' && rules(d).includes('unactionable') && actOf(d).condition === 'unactionable' && actOf(d).why === 'no path';
+});
+t('234 case 3. Alice publishes to Repo_Other: unactionable beyond extent, the path and the surface read back', () => {
+  const d = decide(act(req({ surface: 'Repo_Other', path: 'other/Doc_Valid.md' }))); const a = actOf(d);
+  return d.outcome === 'refused' && rules(d).includes('unactionable') && a.why === 'beyond extent'
+    && a.bound && [].concat(a.bound.granted).includes('Repo_Main') && a.bound.attempted === 'Repo_Other' && [].concat(a.rows).includes('May_Publisher_Main');
+});
+t('234 case 4. Bob granted, evaluated permitted, the grant withdrawn before the build: unactionable at the moment of acting', () => {
+  const q = req({ operator: 'Bob', role: 'Publisher' });
+  const granted = decide(act(q, { world: withRows([{ id: 'Tier_Bob_Publisher', title: 'Bob publishes', relation: 'Tier', actor: 'Bob', tier: 'Publisher' }]) }));
+  const withdrawn = decide(act(q, { world: WORLD })); const a = actOf(withdrawn);
+  return granted.outcome === 'allowed' && withdrawn.outcome === 'refused' && rules(withdrawn).includes('unactionable') && a.evaluated === 'permitted' && a.why === 'no path';
+});
+t('234 case 5. a document no row defines: undefined', () => {
+  const d = decide(act(req({ target: 'Doc_Ghost', path: 'main/Doc_Ghost.md' })));
+  return d.outcome === 'refused' && rules(d).includes('undefined') && actOf(d).condition === 'undefined';
+});
+t('234 case 6. an S7 log published where S4 is required: misplaced', () => {
+  const d = decide(act(req({ target: 'Log_Data', path: 'main/Log_Data.md' })));
+  return d.outcome === 'refused' && rules(d).includes('misplaced') && actOf(d).condition === 'misplaced';
+});
+t('234 case 7. a document with no chain to INT-MOCK: ill-typed', () => {
+  const d = decide(act(req({ target: 'Doc_Orphan', path: 'main/Doc_Orphan.md' })));
+  return d.outcome === 'refused' && rules(d).includes('ill-typed') && actOf(d).condition === 'ill-typed';
+});
+t('234 case 8. a commit naming no actor: unattributed, and the record says no platform identity is available', () => {
+  const d = decide(act(req(), { actor: null }));
+  return d.outcome === 'refused' && rules(d).includes('unattributed') && /^none/.test(actOf(d).identity);
+});
+t('234 case 9. the record step removed without Owner-Line: refused as excluded (passes before the build: the gate already refuses it)', () => {
+  const d = decide(input({ changed: () => ['gate/gate.js'] }));
+  return d.outcome === 'refused' && rules(d).includes('excluded') && !rules(d).includes('wiring');
+});
+t('234 case 10. content that differs from the request evaluated: refused, not the act that was authorized', () => {
+  const q = req();
+  const changedText = decide(act(q, { files: { [q.path]: TEXT.contra } }));
+  const otherPrint = decide(act(q, { claimed: 'f'.repeat(64) }));
+  return changedText.outcome === 'refused' && rules(changedText).includes('request') && otherPrint.outcome === 'refused' && rules(otherPrint).includes('request');
+});
+t('234 case 11. a permitted document whose text contradicts INT-MOCK ships; the gate judges no content', () => {
+  const q = req({ content: sha(TEXT.contra) }); const d = decide(act(q, { files: { [q.path]: TEXT.contra } }));
+  return d.outcome === 'allowed' && actOf(d).condition === 'permitted' && !/finding|semantic/i.test(JSON.stringify(d));
+});
+
+// Piece 4's other checks: a Requires condition the evaluators don't read; an
+// act's files held to its surface; no act without the world to judge it.
+t('234: a request naming no Work Item is refused under the Requires row', () => {
+  const d = decide(act(req({ work_item: null })));
+  return d.outcome === 'refused' && rules(d).includes('requires') && d.refusals.some((x) => /Req_Main_Basis/.test(x.detail));
+});
+t('234: an act that also changes a file in another mock surface is refused beyond extent', () => {
+  const q = req(); const d = decide(act(q, { changed: [RQ, q.path, 'other/x.md'], files: { 'other/x.md': 'x' } }));
+  return d.outcome === 'refused' && rules(d).includes('unactionable') && actOf(d).why === 'beyond extent';
+});
+// 370-DT2 section 2: an act writes only where its request says; one actor per
+// act; no act grants itself.
+t('234: a request whose path lies outside its own surface is refused beyond extent, the path and surface read back', () => {
+  const d = decide(act(req({ path: 'other/Doc_Valid.md' }))); const a = actOf(d);
+  return d.outcome === 'refused' && rules(d).includes('unactionable') && a.why === 'beyond extent' && a.bound && a.bound.attempted === 'Repo_Main' && /other\/Doc_Valid\.md/.test(JSON.stringify(a.bound));
+});
+t('234: an act that also changes a file in no surface is refused beyond extent', () => {
+  const q = req(); const d = decide(act(q, { changed: [RQ, q.path, 'README.md'], files: { 'README.md': 'x' } }));
+  return d.outcome === 'refused' && rules(d).includes('unactionable') && actOf(d).why === 'beyond extent';
+});
+t('234: an Actor line naming someone other than the request\'s operator is unattributed', () => {
+  const d = decide(act(req(), { actor: 'Bob' }));
+  return d.outcome === 'refused' && rules(d).includes('unattributed');
+});
+t('234: no act grants itself: an act that also changes the world is refused, even with Owner-Line and the clearance', () => {
+  const q = req({ operator: 'Bob', role: 'Publisher' });
+  const d = decide(act(q, { owner: '745-CC', changed: [RQ, q.path, 'gate/world.json'], world: withRows([{ id: 'Tier_Bob_Publisher', title: 'Bob publishes', relation: 'Tier', actor: 'Bob', tier: 'Publisher' }]) }));
+  return d.outcome === 'refused' && rules(d).includes('unactionable') && actOf(d).why === 'beyond extent';
+});
+t('234: an act with no readable world is refused, not allowed', () => {
+  const d = decide(act(req(), { world: null }));
+  return d.outcome === 'refused' && rules(d).includes('rows');
+});
+t('234: a commit carrying no request is decided as before, with no act record', () => { const d = decide(input()); return d.outcome === 'allowed' && d.act === undefined; });
+
 let failed = 0;
-console.log('GATE CASES (OKF-TOGAF#219, piece 4)\n');
+console.log('GATE CASES (OKF-TOGAF#219, piece 4; OKF-TOGAF#234)\n');
 for (const [label, fn] of cases) {
   let ok = false, err = '';
   try { ok = fn() === true; } catch (e) { err = ' (' + e.message + ')'; }
