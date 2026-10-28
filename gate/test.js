@@ -260,6 +260,20 @@ t('234: an act with no readable world is refused, not allowed', () => {
   return d.outcome === 'refused' && rules(d).includes('rows');
 });
 t('234: a commit carrying no request is decided as before, with no act record', () => { const d = decide(input()); return d.outcome === 'allowed' && d.act === undefined; });
+// Piece 5: the act's record is in the decision line the build log keeps, in
+// either mode, with every field the plan names: who the commit names, the
+// identity the platform established, the request, the rows, the bound, the
+// result, and the request's own statement, labelled as that.
+t('234 piece 5: the build log\'s decision line carries the act\'s whole record, refused or allowed, in either mode', () => {
+  const fields = ['operator', 'actor_claimed', 'identity', 'request', 'fingerprint', 'rows', 'requires', 'bound', 'condition', 'why', 'evaluated', 'evaluated_is'];
+  const ok = (d, mode) => {
+    const r = finish({ decision: d, config: { mode } });
+    const line = JSON.parse(r.line.replace(/^GATE DECISION /, ''));
+    return line.act && fields.every((k) => Object.prototype.hasOwnProperty.call(line.act, k)) && line.outcome === d.outcome && line.mode === mode && /^none/.test(line.act.identity) && /own statement/.test(line.act.evaluated_is);
+  };
+  const allowed = decide(act(req())), refused = decide(act(req({ operator: 'Bob', role: 'Drafter' })));
+  return allowed.outcome === 'allowed' && refused.outcome === 'refused' && ['refuse', 'record'].every((m) => ok(allowed, m) && ok(refused, m));
+});
 // 376-DT2: a document published with no request, and a request file that is
 // also the world.
 t('234: a change inside a mock surface with no Request line is an act, refused unactionable, no request', () => {
