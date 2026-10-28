@@ -1,5 +1,5 @@
 # Doc_Valid
 
-Nothing should ever be published.
+Publishing serves the mock intent.
 
-Attempt 13.
+Attempt 14.
