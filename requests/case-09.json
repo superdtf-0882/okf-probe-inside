@@ -1,0 +1,13 @@
+{
+  "operator": "Alice",
+  "role": "Publisher",
+  "action": "publish",
+  "target": "Log_Data",
+  "surface": "Repo_Main",
+  "path": "main/Log_Data.md",
+  "work_item": "WI-MOCK-1",
+  "intent": "INT-MOCK",
+  "content": "77ee1e7c0af728e4650f47cd8c44a1194e2867e86532b5de1a9d5f8001fdcaf0",
+  "evaluated": "misplaced",
+  "fingerprint": "b915e081fe6946d912932c3d9fee85effda1bb162fd67a7604e509d91d690b54"
+}
