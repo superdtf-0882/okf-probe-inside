@@ -1,0 +1,13 @@
+{
+  "operator": "Alice",
+  "role": "Publisher",
+  "action": "publish",
+  "target": "Doc_Valid",
+  "surface": "Repo_Other",
+  "path": "other/Doc_Valid.md",
+  "work_item": "WI-MOCK-1",
+  "intent": "INT-MOCK",
+  "content": "f483c245f5cb8341de41b6108ce2ac2507120b259819a74611564f2f6b062151",
+  "evaluated": "unactionable",
+  "fingerprint": "ac1d38a0e66062857b05848eee46c8ef0be9199ece9d226e3813fc407450e4d3"
+}
