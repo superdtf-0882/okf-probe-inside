@@ -12,6 +12,11 @@
 // asked of the join evaluator, a file your line excludes passing only with an
 // Owner-Line, a forbidden one never.
 //
+// And for a commit that carries an act (OKF-TOGAF#234 piece 4, 368-DT2 with
+// 742-CC's corrections): the act's request, its fingerprint, the shipped
+// content and the actor it claims, decided against gate/world.json as it
+// ships, so a grant withdrawn before the build is used; see actCheck below.
+//
 // It reads one variable by name, the commit's id, and runs git on the build's
 // own checkout. It makes no network call and lists no environment. The rows
 // are a copy, gate/store.json, with the corpus revision it was taken at; the
@@ -34,6 +39,7 @@ const clearance = require('./lib/clearance');
 const { facts } = require('./lib/authority-facts');
 const { evaluate } = require('./lib/authority-join');
 const { matches } = require('./lib/authority');
+const ar = require('./lib/act-request');
 
 const SEP = '\u0001';
 
@@ -83,6 +89,9 @@ function decide(input) {
   out.files = changed.length;
   for (const w of wiringChanges(changed, c.base, input.sha, input.fileAt)) if (!o || /cannot read|could not be read/.test(w)) refuse('wiring', o ? w : w + '; it needs Owner-Line');
 
+  // The pusher's check asks the join alone: the einsum evaluator takes about
+  // ninety seconds on these rows, against milliseconds on the mock world,
+  // where the act's check asks both (lib/act-request.js; 373-DT2, 751-CC).
   let rel;
   try { rel = evaluate(store.rows.filter((x) => x.relation === 'Rule'), facts(store.rows).relations); }
   catch (e) { refuse('rows', 'the evaluator could not read the rows: ' + e.message); return done(); }
@@ -110,7 +119,72 @@ function decide(input) {
     }
     if (worst) refuse(worst.rule, worst.detail);
   }
+  actCheck(input, store, changed, refuse, out, c.base);
   return done();
+}
+
+// ------------------------------------------------------------- the act (OKF-TOGAF#234 piece 4)
+// A commit that carries an act names its request file and fingerprint
+// (Request:) and the actor it claims (Actor:). The gate reads the request and
+// the world as they ship, binds the shipped content to the fingerprint, decides
+// the act with lib/act-request.js (both evaluators) and holds the act's files
+// to the request: the request file and the request's path, nothing else, so no
+// act changes the world that grants it. A commit with no Request line is
+// decided as before, with no act record.
+const REQUEST = /^Request:[ \t]+(\S+)[ \t]+([0-9a-f]{64}|\S+)[ \t]*$/;
+const ACTOR = /^Actor:[ \t]+(\S+)[ \t]*$/;
+const REQUEST_FILE = /^requests\/[A-Za-z0-9_-][A-Za-z0-9_.-]*\.json$/;
+const IDENTITY = 'none: no platform-established pushing identity is available to the build; the Actor line is the commit\'s claim';
+function lineOf(message, re) { const m = String(message || '').split(/\r?\n/).map((l) => re.exec(l)).filter(Boolean); return m.length === 1 ? m[0] : m.length ? false : null; }
+
+function actCheck(input, store, changed, refuse, out, base) {
+  const rq = lineOf(input.message, REQUEST);
+  // A change inside a mock surface's folder is an act, request or none
+  // (376-DT2). The folders are those of the world as it ships and of the world
+  // at the clearance's base, together (377-DT2), so removing, emptying or
+  // renaming them in the same commit doesn't remove the check.
+  let baseWorld = null;
+  try { baseWorld = typeof input.fileAt === 'function' ? JSON.parse(input.fileAt(base, 'gate/world.json')) : null; } catch (e) { baseWorld = null; }
+  const folders = (w) => (w && Array.isArray(w.rows) ? w.rows.filter((x) => x.relation === 'Surface' && typeof x.path === 'string' && x.path).map((x) => x.path) : []);
+  const mockPaths = [...new Set(folders(input.world).concat(folders(baseWorld)))];
+  const inMock = changed.filter((f) => mockPaths.some((m) => matches(m, f)));
+  if (rq === null && !inMock.length) return;
+  const ac = lineOf(input.message, ACTOR);
+  const act = out.act = { condition: null, why: null, operator: null, actor_claimed: ac ? ac[1] : null, identity: IDENTITY, request: rq ? rq[1] : null, fingerprint: null, rows: [], requires: [], bound: null, evaluated: null, evaluated_is: 'the request\'s own statement, outside the fingerprint', detail: '' };
+  const fail = (rule, detail, why) => { act.condition = act.condition || rule; act.why = act.why || why || null; act.detail = act.detail || detail; refuse(rule, detail); };
+  if (rq === null) return fail('unactionable', `${inMock.join(', ')} changed in a mock surface, and the commit names no request`, 'no request');
+  if (rq === false) return fail('request', 'more than one Request line');
+  // The request lives in requests/ and nowhere else, so it can't be the world
+  // or any other file the gate reads (376-DT2). It isn't read otherwise.
+  if (!REQUEST_FILE.test(rq[1])) return fail('request', `${rq[1]}: a request is requests/<name>.json, and is not read from anywhere else`);
+  if (ac === false) return fail('unattributed', 'more than one Actor line');
+  const world = input.world;
+  if (!world || !Array.isArray(world.rows) || !world.rows.length) return fail('rows', 'no readable world to decide the act by');
+  const read = typeof input.readShipped === 'function' ? input.readShipped : () => null;
+  let q = null;
+  try { q = JSON.parse(read(rq[1])); } catch (e) { q = null; }
+  if (!q || typeof q !== 'object') return fail('request', `${rq[1]} is not a readable request`);
+  act.operator = q.operator || null; act.fingerprint = q.fingerprint || null; act.evaluated = q.evaluated || null;
+  if (ar.fingerprint(q) !== q.fingerprint || rq[2] !== q.fingerprint) return fail('request', 'the fingerprint does not match the request: not the act that was authorized');
+  const text = typeof q.path === 'string' ? read(q.path) : null;
+  if (text === null || ar.sha(text) !== q.content) return fail('request', `${q.path} as shipped differs from the request evaluated: not the act that was authorized`);
+  if (!ac) return fail('unattributed', 'the commit names no actor');
+  if (ac[1] !== q.operator) return fail('unattributed', `the commit names ${ac[1]}; the request's operator is ${q.operator}`);
+
+  const e = ar.evaluate(q, world, store.rows.filter((x) => x.relation === 'Rule'));
+  act.rows = e.context.path; act.requires = e.context.requires; act.bound = e.bound;
+  if (e.condition !== 'permitted') return fail(e.condition, e.detail, e.why);
+  const beyond = changed.filter((f) => f !== rq[1] && f !== q.path);
+  if (beyond.length) {
+    let granted = [];
+    try {
+      const wr = evaluate(store.rows.filter((x) => x.relation === 'Rule'), facts(world.rows).relations);
+      granted = [...(wr.Permitted || [])].map((x) => x.split(SEP)).filter(([a, k]) => a === q.operator && k === q.action).map(([, , s]) => s).sort();
+    } catch (e) { granted = []; }
+    act.bound = { granted, attempted: q.surface, path: q.path, beyond };
+    return fail('unactionable', `the act also changes ${beyond.join(', ')}, which its request doesn't name`, 'beyond extent');
+  }
+  act.condition = 'permitted'; act.detail = e.detail;
 }
 
 // ------------------------------------------------------------- the build
@@ -145,14 +219,19 @@ function main() {
     const sha = tryGit('rev-parse', 'HEAD');
     let store = null;
     try { store = JSON.parse(fs.readFileSync(path.join(__dirname, 'store.json'), 'utf8')); } catch (e) { store = null; }
+    const fileAt = (rev, p) => { try { return String(execFileSync('git', ['show', rev + ':' + p], { stdio: ['ignore', 'pipe', 'ignore'] })); } catch (e) { return null; } };
+    let world = null;
+    try { world = JSON.parse(fileAt(sha, 'gate/world.json')); } catch (e) { world = null; }
     d = sha ? decide({
       sha,
+      world,
+      readShipped: (p) => fileAt(sha, p),
       varSha: process.env.VERCEL_GIT_COMMIT_SHA || null,
       message: tryGit('log', '-1', '--format=%B', sha) || '',
       tree: tryGit('rev-parse', sha + '^{tree}'),
       isAncestor: (b) => { try { execFileSync('git', ['merge-base', '--is-ancestor', b, sha], { stdio: 'ignore' }); return true; } catch (e) { return false; } },
       changed: (b) => { const r = tryGit('diff', '--name-only', '--no-renames', b, sha); return r === null ? null : r.split('\n').filter(Boolean); },
-      fileAt: (rev, p) => { try { return String(execFileSync('git', ['show', rev + ':' + p], { stdio: ['ignore', 'pipe', 'ignore'] })); } catch (e) { return null; } },
+      fileAt,
       store,
     }) : { gate: 'authority gate, piece 4', commit: null, outcome: 'refused', refusals: [{ rule: 'commit', detail: 'no commit checked out' }] };
   } catch (e) { error = e; }

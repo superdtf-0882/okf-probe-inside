@@ -1,10 +1,12 @@
 {
   "source": "superdtf-0882/OKF-TOGAF:tools/lib/",
-  "revision": "f5e5029893ab77b153953848725a8418035a3e67",
+  "revision": "3876dd206dc11923b97b3f999ce8b43a9fcdf302",
   "files": {
     "authority.js": "38e8fa86666f8be00c8d1c0bfb762915c36e686fb6aa89e8534da56a5b86d689",
     "authority-facts.js": "c70d823842a83aedfa88485adec6952a544ea256f2a89735702b0f0756e315c4",
     "authority-join.js": "0cd84f229ca980ee98b44032ddcd70f097efc901dbe59a6c2bd0934ca9eb1292",
+    "authority-einsum.js": "551753c22ff15908db1d02ae75e79efce61eec99b12a2ea485dde0dfefca57c6",
+    "act-request.js": "2fda34bc535cb0652db7ba90c6ef15e4f271288710ad02f935f055996a1feb28",
     "clearance.js": "df9361d25f290c7d364574e2574ac5bc7727d3556bea23e517991f55e3b4a66b"
   }
 }

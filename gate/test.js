@@ -260,6 +260,36 @@ t('234: an act with no readable world is refused, not allowed', () => {
   return d.outcome === 'refused' && rules(d).includes('rows');
 });
 t('234: a commit carrying no request is decided as before, with no act record', () => { const d = decide(input()); return d.outcome === 'allowed' && d.act === undefined; });
+// 376-DT2: a document published with no request, and a request file that is
+// also the world.
+t('234: a change inside a mock surface with no Request line is an act, refused unactionable, no request', () => {
+  const d = decide(input({ changed: () => ['main/Doc_Valid.md'], world: WORLD, readShipped: (p) => (p === 'main/Doc_Valid.md' ? TEXT.valid : null) }));
+  return d.outcome === 'refused' && rules(d).includes('unactionable') && actOf(d).why === 'no request';
+});
+t('234: a request file outside requests/ is refused before it is read, even as the world itself', () => {
+  const q = req({ operator: 'Bob', role: 'Publisher' });
+  const both = JSON.stringify(Object.assign({}, withRows([{ id: 'Tier_Bob_Publisher', title: 'Bob publishes', relation: 'Tier', actor: 'Bob', tier: 'Publisher' }]), q));
+  let read = false;
+  const d = decide(input({ message: msg(cleared(), 'Actor: Bob', 'Request: gate/world.json ' + q.fingerprint, 'Owner-Line: 745-CC'), changed: () => ['gate/world.json', q.path], world: JSON.parse(both),
+    readShipped: (p) => { if (p === 'gate/world.json') { read = true; return both; } return p === q.path ? TEXT.valid : null; } }));
+  return d.outcome === 'refused' && rules(d).includes('request') && !read && actOf(d).condition !== 'permitted';
+});
+t('234: a change inside a mock surface, the world removed in the same commit, is still an act, and refused', () => {
+  const d = decide(input({ changed: () => ['main/Doc_Valid.md', 'gate/world.json'], message: msg(cleared(), 'Owner-Line: 745-CC'), world: null,
+    fileAt: (rev, p) => (rev === BASE && p === 'gate/world.json' ? JSON.stringify(WORLD) : null), readShipped: (p) => (p === 'main/Doc_Valid.md' ? TEXT.valid : null) }));
+  return d.outcome === 'refused' && d.act !== undefined;
+});
+t('234: a change inside a mock surface, the world kept but stripped of its folders, is still an act, and refused (377-DT2)', () => {
+  const bare = Object.assign({}, WORLD, { rows: WORLD.rows.filter((x) => !(x.relation === 'Surface' && x.path)) });
+  const d = decide(input({ changed: () => ['main/Doc_Valid.md', 'gate/world.json'], message: msg(cleared(), 'Owner-Line: 745-CC'), world: bare,
+    fileAt: (rev, p) => (rev === BASE && p === 'gate/world.json' ? JSON.stringify(WORLD) : null), readShipped: (p) => (p === 'main/Doc_Valid.md' ? TEXT.valid : null) }));
+  return d.outcome === 'refused' && d.act !== undefined && actOf(d).why === 'no request';
+});
+t('234: an act refused beyond extent for an extra file reads back the evaluators\' granted surfaces', () => {
+  const q = req(); const d = decide(act(q, { changed: [RQ, q.path, 'other/x.md'], files: { 'other/x.md': 'x' } }));
+  const g = [].concat((actOf(d).bound || {}).granted);
+  return g.includes('Repo_Main') && g.includes('Repo_Main_Docs');
+});
 
 let failed = 0;
 console.log('GATE CASES (OKF-TOGAF#219, piece 4; OKF-TOGAF#234)\n');

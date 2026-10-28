@@ -25,7 +25,6 @@ const t = (label, fn) => cases.push([label, fn]);
 let lib = null, loadError = '';
 try { lib = require('../gate/lib/act-request'); } catch (e) { loadError = e.code || e.message; }
 const run = (o, world) => lib.evaluate(ask(o), world || WORLD, RULES);
-
 t('case 1: permitted, with the chain, the path and the Requires row given before acting', () => {
   const e = run(); const c = e.context;
   return e.condition === 'permitted' && e.request.evaluated === 'permitted' && e.request.path === 'main/Doc_Valid.md'
@@ -51,6 +50,37 @@ t('case 7: Doc_Orphan: ill-typed, and the missing link offered as a proposal, no
 });
 t('a request whose claimed intent is not on the target\'s chain is ill-typed', () => run({ intent: 'INT-OTHER-MOCK' }).condition === 'ill-typed');
 t('a request naming no operator is refused before acting: unattributed', () => run({ operator: null }).condition === 'unattributed');
+
+// 373-DT2: four acts the clause refuses that the first build permitted, and
+// four smaller fixes. Written before the fixes.
+const rowsOf = (extra, drop) => Object.assign({}, WORLD, { rows: WORLD.rows.filter((r) => !(drop || []).includes(r.id)).concat(extra || []) });
+const MAY_OTHER = { id: 'May_Publisher_Other', title: 'A publisher may publish to Repo_Other', relation: 'May', tier: 'Publisher', action: 'publish', surface: 'Repo_Other' };
+t('373 §2.1: an act naming no intent, with no Requires row in the world, is ill-typed', () => run({ intent: null }, rowsOf([], ['Req_Main_Basis'])).condition === 'ill-typed');
+t('373 §2.2: a record whose kind no kinds row defines is undefined', () => {
+  const w = Object.assign({}, WORLD, { records: WORLD.records.concat([{ id: 'Note_X', kind: 'Note', stratum: 'S4', realizes: ['INT-MOCK'] }]) });
+  const e = run({ target: 'Note_X' }, w); return e.condition === 'undefined' && /Note/.test(e.detail);
+});
+t('373 §2.3: with no acts row for publishing, an S7 log is misplaced, placement not shown', () => {
+  const e = run({ target: 'Log_Data' }, Object.assign({}, WORLD, { acts: [] })); return e.condition === 'misplaced';
+});
+t('373 §2.4: a path that climbs out of its folder, starts at the root or holds a backslash is beyond extent', () => ['main/../other/Doc_Valid.md', '/main/Doc_Valid.md', 'main\\Doc_Valid.md'].every((path) => {
+  const e = run({ path }); return e.condition === 'unactionable' && e.why === 'beyond extent';
+}));
+t('373 §3.1: permitted names only the grants that reach the attempted surface', () => {
+  const e = run({}, rowsOf([MAY_OTHER])); return e.condition === 'permitted' && e.context.path.includes('May_Publisher_Main') && !e.context.path.includes('May_Publisher_Other') && !/May_Publisher_Other/.test(e.detail);
+});
+t('373 §3.2: a bar is named as a bar, with the grant, and a bar elsewhere is not named', () => {
+  const here = run({}, rowsOf([{ id: 'No_Alice_Main', relation: 'Forbidden', actor: 'Alice', action: 'publish', surface: 'Repo_Main' }]));
+  const there = run({}, rowsOf([{ id: 'No_Alice_Other', relation: 'Forbidden', actor: 'Alice', action: 'publish', surface: 'Repo_Other' }]));
+  return here.condition === 'unactionable' && here.why === 'barred' && /May_Publisher_Main/.test(here.detail) && /No_Alice_Main/.test(here.detail) && !/anywhere/.test(here.detail)
+    && there.condition === 'permitted' && !/No_Alice_Other/.test(there.detail);
+});
+t('373 §3.3: no Rule rows decides nothing, refused as rows', () => lib.evaluate(ask(), WORLD, []).condition === 'rows');
+t('373 §3.4: evaluators that disagree leave the act unactionable, undecided', () => {
+  const none = { evaluate: () => ({ Permitted: new Set() }) };
+  const e = lib.evaluate(ask(), WORLD, RULES, { evaluators: [require('../gate/lib/authority-join'), none] });
+  return e.condition === 'unactionable' && e.why === 'undecided' && /disagree/.test(e.detail);
+});
 
 let failed = 0;
 console.log('PROOF HARNESS (OKF-TOGAF#234, pieces 2 and 3)\n');
