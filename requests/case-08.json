@@ -1,0 +1,13 @@
+{
+  "operator": "Alice",
+  "role": "Publisher",
+  "action": "publish",
+  "target": "Doc_Ghost",
+  "surface": "Repo_Main",
+  "path": "main/Doc_Ghost.md",
+  "work_item": "WI-MOCK-1",
+  "intent": "INT-MOCK",
+  "content": "3425b512fea6c989976a242698483deee035030b03c528e1593addcfa07377e6",
+  "evaluated": "undefined",
+  "fingerprint": "7436a9da05cca4041c3368e4c4ffb8bf08200c7c46a37fc0656608a6c71f540d"
+}
