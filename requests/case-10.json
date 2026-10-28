@@ -1,0 +1,13 @@
+{
+  "operator": "Alice",
+  "role": "Publisher",
+  "action": "publish",
+  "target": "Doc_Orphan",
+  "surface": "Repo_Main",
+  "path": "main/Doc_Orphan.md",
+  "work_item": "WI-MOCK-1",
+  "intent": "INT-MOCK",
+  "content": "ce42855e52da7a3e153d66b0ac10ff25c131120c9584c9cb49fb1610f9a162b5",
+  "evaluated": "ill-typed",
+  "fingerprint": "ac105147315060de0a77f6423a228add3013e5b1fc6ff1f6a5d3fbb5dac75ea5"
+}
