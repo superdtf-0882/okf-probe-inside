@@ -1,0 +1,13 @@
+{
+  "operator": "Bob",
+  "role": "Drafter",
+  "action": "publish",
+  "target": "Doc_Valid",
+  "surface": "Repo_Main",
+  "path": "main/Doc_Valid.md",
+  "work_item": "WI-MOCK-1",
+  "intent": "INT-MOCK",
+  "content": "079451876fb96256248ba78057163daef5bdcf18560bc06f8bf1d56849f56029",
+  "evaluated": "unactionable",
+  "fingerprint": "ee601a1509222eca1ac7183ffacdd582d42fc07e46c8c21f6dd10f02a3d636f8"
+}
