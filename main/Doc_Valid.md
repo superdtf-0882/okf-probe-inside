@@ -1,7 +1,5 @@
 # Doc_Valid
 
-Publishing serves the mock intent.
+Nothing should ever be published.
 
-Attempt 12.
-
-Changed after the request was evaluated.
+Attempt 13.
