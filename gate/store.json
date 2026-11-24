@@ -1,9 +1,14 @@
 {
  "source": "superdtf-0882/OKF-TOGAF:corpus/authority.md",
- "revision": "f5e5029893ab77b153953848725a8418035a3e67",
+ "revision": "dd681b30cba6fee68a74874d90d9b80ea520a4e4",
  "actor": "AUTH-ACTOR-CC",
  "action": "AUTH-ACT-PUSH",
  "repository": "AUTH-SURF-PROBE",
+ "left_out": [
+  "Reach",
+  "NotMediated",
+  "Covers"
+ ],
  "rows": [
   {
    "id": "AUTH-ACTOR-OWNER",
@@ -99,12 +104,63 @@
    "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
   },
   {
+   "id": "AUTH-ACT-FORCE-PUSH",
+   "title": "Rewrite a branch's history by a non-fast-forward push",
+   "relation": "Action",
+   "kind": "write",
+   "irreversible": true,
+   "source": "briefs/2026-10-01-svm-tranche-3/416-DT2-corpus-rule-ruled.md"
+  },
+  {
+   "id": "AUTH-ACT-DELETE-BRANCH",
+   "title": "Delete a branch",
+   "relation": "Action",
+   "kind": "write",
+   "irreversible": true,
+   "source": "briefs/2026-10-01-svm-tranche-3/416-DT2-corpus-rule-ruled.md"
+  },
+  {
+   "id": "AUTH-ACT-RESTORE",
+   "title": "Put an earlier production deployment back at a public address",
+   "relation": "Action",
+   "kind": "write",
+   "irreversible": false,
+   "source": "briefs/2026-10-01-svm-tranche-3/754-DT2-270-plan-ruled.md"
+  },
+  {
    "id": "AUTH-SURF-CORPUS",
    "title": "The corpus repository, OKF-TOGAF",
    "relation": "Surface",
    "cites": "A21",
    "party": "practice",
    "source": "A21"
+  },
+  {
+   "id": "AUTH-SURF-CORPUS-BRIEFS",
+   "title": "The corpus repository's brief folders, where filed briefs and CC's own act briefs go",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "briefs/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/327-DT2-routine-filing-rule.md"
+  },
+  {
+   "id": "AUTH-SURF-CORPUS-DOCS",
+   "title": "The corpus repository's generated pages",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "docs/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/327-DT2-routine-filing-rule.md"
+  },
+  {
+   "id": "AUTH-SURF-CORPUS-GENERATED",
+   "title": "The corpus repository's generated records",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "tools/generated/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/327-DT2-routine-filing-rule.md"
   },
   {
    "id": "AUTH-SURF-SITE",
@@ -183,6 +239,24 @@
    "path": "tools/lib/authority*.js",
    "party": "practice",
    "source": "briefs/2026-10-01-svm-tranche-3/588-CC-plane-evaluators.md"
+  },
+  {
+   "id": "AUTH-SURF-PLANE-PROBE",
+   "title": "The probe tool",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "tools/reach-probe.js",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/592-CC-reach-rows.md"
+  },
+  {
+   "id": "AUTH-SURF-PLANE-PROBES",
+   "title": "The probe list and its expected outcomes",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "tools/reach-probes.json",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/592-CC-reach-rows.md"
   },
   {
    "id": "AUTH-SURF-PLANE-TOOL",
@@ -293,6 +367,60 @@
    "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
   },
   {
+   "id": "AUTH-SURF-SITE-RELEASE-GATE",
+   "title": "The site's release gate, the recorder, in the plane class",
+   "relation": "Surface",
+   "cites": "A13",
+   "path": "gate/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/635-CC-site-install-prepared.md"
+  },
+  {
+   "id": "AUTH-SURF-SITE-CODE-GATE",
+   "title": "The site's secrets gate, run in its build, in the plane class",
+   "relation": "Surface",
+   "cites": "A13",
+   "path": "scripts/code-gate.js",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/638-CC-site-gate-rows.md"
+  },
+  {
+   "id": "AUTH-SURF-SITE-HOOK",
+   "title": "The site's copy of the commit hook, in the plane class",
+   "relation": "Surface",
+   "cites": "A13",
+   "path": "tools/hooks/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/638-CC-site-gate-rows.md"
+  },
+  {
+   "id": "AUTH-SURF-SITE-SURFACES",
+   "title": "The surfaces file the site's commit hook reads, in the plane class",
+   "relation": "Surface",
+   "cites": "A13",
+   "path": ".work-item-surfaces",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/638-CC-site-gate-rows.md"
+  },
+  {
+   "id": "AUTH-SURF-SITE-SETTINGS",
+   "title": "The site's project settings file, in the settings class by its path",
+   "relation": "Surface",
+   "cites": "A13",
+   "path": ".claude/settings.json",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/635-CC-site-install-prepared.md"
+  },
+  {
+   "id": "AUTH-SURF-SITE-SETTINGS-LOCAL",
+   "title": "The site's local settings file, in the settings class by its path",
+   "relation": "Surface",
+   "cites": "A13",
+   "path": ".claude/settings.local.json",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/636-CC-settings-local-rows.md"
+  },
+  {
    "id": "AUTH-SURF-CLEARANCE-LIB",
    "title": "The clearance library the gate and the filing check call",
    "relation": "Surface",
@@ -310,6 +438,14 @@
    "source": "A23"
   },
   {
+   "id": "AUTH-SURF-PROBE-OUTSIDE",
+   "title": "The throwaway target outside every grant, okf-probe-outside",
+   "relation": "Surface",
+   "cites": "A25",
+   "party": "practice",
+   "source": "A25"
+  },
+  {
    "id": "AUTH-SURF-PROBE-SETTINGS",
    "title": "The probe's stand-in for the settings class",
    "relation": "Surface",
@@ -319,6 +455,15 @@
    "source": "briefs/2026-10-01-svm-tranche-3/587-CC-probe-rows.md"
   },
   {
+   "id": "AUTH-SURF-PROBE-SETTINGS-LOCAL",
+   "title": "The probe's local settings file, in the settings class by its path",
+   "relation": "Surface",
+   "cites": "A23",
+   "path": ".claude/settings.local.json",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/636-CC-settings-local-rows.md"
+  },
+  {
    "id": "AUTH-SURF-PROBE-GATE",
    "title": "The probe's deploy gate, its stand-in for the plane class",
    "relation": "Surface",
@@ -326,6 +471,24 @@
    "path": "gate/",
    "party": "practice",
    "source": "briefs/2026-10-01-svm-tranche-3/587-CC-probe-rows.md"
+  },
+  {
+   "id": "AUTH-SURF-PROBE-WORKFLOWS",
+   "title": "The probe's workflows, which take effect when pushed",
+   "relation": "Surface",
+   "cites": "A23",
+   "path": ".github/workflows/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/754-DT2-270-plan-ruled.md"
+  },
+  {
+   "id": "AUTH-SURF-PROBE-ROLLBACK",
+   "title": "The probe's rollback script and library, which its workflow runs with the key",
+   "relation": "Surface",
+   "cites": "A23",
+   "path": "rollback/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/1331-CC-270-rows-line.md"
   },
   {
    "id": "AUTH-SURF-PROBE-SPEC",
@@ -382,6 +545,64 @@
    "source": "briefs/2026-10-01-svm-tranche-3/579-CC-219-piece4-decided.md"
   },
   {
+   "id": "AUTH-SURF-MODEL-SDLC",
+   "title": "The SDLC maturity model repository",
+   "relation": "Surface",
+   "cites": "A3",
+   "party": "practice",
+   "source": "A3"
+  },
+  {
+   "id": "AUTH-SURF-MODEL-PDLC",
+   "title": "The PDLC maturity model repository",
+   "relation": "Surface",
+   "cites": "A19",
+   "party": "practice",
+   "source": "A19"
+  },
+  {
+   "id": "AUTH-SURF-MODEL-EA",
+   "title": "The EA maturity model repository",
+   "relation": "Surface",
+   "cites": "A14",
+   "party": "practice",
+   "source": "A14"
+  },
+  {
+   "id": "AUTH-SURF-MODEL-PRIORITIZATION",
+   "title": "The Portfolio Prioritization maturity model repository",
+   "relation": "Surface",
+   "cites": "A20",
+   "party": "practice",
+   "source": "A20"
+  },
+  {
+   "id": "AUTH-SURF-MODEL-PRODUCT-MARKETING",
+   "title": "The Product Marketing maturity model repository",
+   "relation": "Surface",
+   "cites": "A22",
+   "party": "practice",
+   "source": "A22"
+  },
+  {
+   "id": "AUTH-SURF-MODEL-TEMPLATE-TOOLS",
+   "title": "The model template's tools, the source of every model's release parts",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "tools/model-template/tools/",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/432-DT2-209-rows-read.md"
+  },
+  {
+   "id": "AUTH-SURF-CUT-RELEASE",
+   "title": "The practice's side of a model release, which compares a clone with those sources",
+   "relation": "Surface",
+   "cites": "A21",
+   "path": "tools/cut-release.js",
+   "party": "practice",
+   "source": "briefs/2026-10-01-svm-tranche-3/432-DT2-209-rows-read.md"
+  },
+  {
    "id": "AUTH-CLASS-RATIFIED",
    "title": "The owner's ratified instruments beyond the plane: every file under spec/, and the standards, principles, constraints and intent register",
    "relation": "Class",
@@ -421,8 +642,18 @@
     "spec/ea-okf-bundle-spec.md",
     "tools/hooks/",
     "AUTH-SURF-SITE-GATE",
+    "AUTH-SURF-SITE-RELEASE-GATE",
+    "AUTH-SURF-SITE-CODE-GATE",
+    "AUTH-SURF-SITE-HOOK",
+    "AUTH-SURF-SITE-SURFACES",
     "tools/lib/clearance.js",
-    "AUTH-SURF-PROBE-GATE"
+    "AUTH-SURF-PROBE-GATE",
+    "AUTH-SURF-PROBE-WORKFLOWS",
+    "AUTH-SURF-PROBE-ROLLBACK",
+    "tools/reach-probe.js",
+    "tools/reach-probes.json",
+    "tools/model-template/tools/",
+    "tools/cut-release.js"
    ],
    "source": "briefs/2026-10-01-svm-tranche-3/576-CC-219-plane-widened.md"
   },
@@ -432,7 +663,12 @@
    "relation": "Class",
    "members": [
     "AUTH-SURF-CORPUS",
-    "AUTH-SURF-SITE"
+    "AUTH-SURF-SITE",
+    "AUTH-SURF-MODEL-SDLC",
+    "AUTH-SURF-MODEL-PDLC",
+    "AUTH-SURF-MODEL-EA",
+    "AUTH-SURF-MODEL-PRIORITIZATION",
+    "AUTH-SURF-MODEL-PRODUCT-MARKETING"
    ],
    "source": "briefs/2026-10-01-svm-tranche-3/570-CC-219-piece1-built.md"
   },
@@ -527,6 +763,132 @@
    "source": "RULE-5"
   },
   {
+   "id": "AUTH-FORBID-SETTINGS-PUSH-EXECUTOR-FORCE-PUSH",
+   "title": "No executor pushes a change to a security or permission setting, even on the owner's word, and a force-push likewise",
+   "relation": "Forbidden",
+   "tier": "executor",
+   "action": "AUTH-ACT-FORCE-PUSH",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SETTINGS-PUSH-EXECUTOR-DELETE-BRANCH",
+   "title": "No executor pushes a change to a security or permission setting, even on the owner's word, and a branch deletion likewise",
+   "relation": "Forbidden",
+   "tier": "executor",
+   "action": "AUTH-ACT-DELETE-BRANCH",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SETTINGS-PUSH-DRAFTER-FORCE-PUSH",
+   "title": "No drafter pushes a change to a security or permission setting, even on the owner's word, and a force-push likewise",
+   "relation": "Forbidden",
+   "tier": "drafter",
+   "action": "AUTH-ACT-FORCE-PUSH",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SETTINGS-PUSH-DRAFTER-DELETE-BRANCH",
+   "title": "No drafter pushes a change to a security or permission setting, even on the owner's word, and a branch deletion likewise",
+   "relation": "Forbidden",
+   "tier": "drafter",
+   "action": "AUTH-ACT-DELETE-BRANCH",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SETTINGS-PUSH-REVIEWER-FORCE-PUSH",
+   "title": "No reviewer pushes a change to a security or permission setting, even on the owner's word, and a force-push likewise",
+   "relation": "Forbidden",
+   "tier": "reviewer",
+   "action": "AUTH-ACT-FORCE-PUSH",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SETTINGS-PUSH-REVIEWER-DELETE-BRANCH",
+   "title": "No reviewer pushes a change to a security or permission setting, even on the owner's word, and a branch deletion likewise",
+   "relation": "Forbidden",
+   "tier": "reviewer",
+   "action": "AUTH-ACT-DELETE-BRANCH",
+   "class": "AUTH-CLASS-SETTINGS",
+   "source": "briefs/2026-10-01-svm-tranche-3/52-CC-settings-and-containment.md"
+  },
+  {
+   "id": "AUTH-FORBID-SUPPLIER-EXECUTOR-FORCE-PUSH",
+   "title": "No executor writes to the supplier's repository, and a force-push likewise",
+   "relation": "Forbidden",
+   "tier": "executor",
+   "action": "AUTH-ACT-FORCE-PUSH",
+   "surface": "AUTH-SURF-SUPPLIER",
+   "source": "AC-013"
+  },
+  {
+   "id": "AUTH-FORBID-SUPPLIER-EXECUTOR-DELETE-BRANCH",
+   "title": "No executor writes to the supplier's repository, and a branch deletion likewise",
+   "relation": "Forbidden",
+   "tier": "executor",
+   "action": "AUTH-ACT-DELETE-BRANCH",
+   "surface": "AUTH-SURF-SUPPLIER",
+   "source": "AC-013"
+  },
+  {
+   "id": "AUTH-FORBID-SUPPLIER-DRAFTER-FORCE-PUSH",
+   "title": "No drafter writes to the supplier's repository, and a force-push likewise",
+   "relation": "Forbidden",
+   "tier": "drafter",
+   "action": "AUTH-ACT-FORCE-PUSH",
+   "surface": "AUTH-SURF-SUPPLIER",
+   "source": "AC-013"
+  },
+  {
+   "id": "AUTH-FORBID-SUPPLIER-DRAFTER-DELETE-BRANCH",
+   "title": "No drafter writes to the supplier's repository, and a branch deletion likewise",
+   "relation": "Forbidden",
+   "tier": "drafter",
+   "action": "AUTH-ACT-DELETE-BRANCH",
+   "surface": "AUTH-SURF-SUPPLIER",
+   "source": "AC-013"
+  },
+  {
+   "id": "AUTH-FORBID-SUPPLIER-REVIEWER-FORCE-PUSH",
+   "title": "No reviewer writes to the supplier's repository, and a force-push likewise",
+   "relation": "Forbidden",
+   "tier": "reviewer",
+   "action": "AUTH-ACT-FORCE-PUSH",
+   "surface": "AUTH-SURF-SUPPLIER",
+   "source": "AC-013"
+  },
+  {
+   "id": "AUTH-FORBID-SUPPLIER-REVIEWER-DELETE-BRANCH",
+   "title": "No reviewer writes to the supplier's repository, and a branch deletion likewise",
+   "relation": "Forbidden",
+   "tier": "reviewer",
+   "action": "AUTH-ACT-DELETE-BRANCH",
+   "surface": "AUTH-SURF-SUPPLIER",
+   "source": "AC-013"
+  },
+  {
+   "id": "AUTH-FORBID-DT2-PUSH-FORCE-PUSH",
+   "title": "DT's role pushes to none of the practice's repositories, and a force-push likewise",
+   "relation": "Forbidden",
+   "actor": "AUTH-ACTOR-DT2",
+   "action": "AUTH-ACT-FORCE-PUSH",
+   "class": "AUTH-CLASS-PRACTICE-REPOS",
+   "source": "RULE-5"
+  },
+  {
+   "id": "AUTH-FORBID-DT2-PUSH-DELETE-BRANCH",
+   "title": "DT's role pushes to none of the practice's repositories, and a branch deletion likewise",
+   "relation": "Forbidden",
+   "actor": "AUTH-ACTOR-DT2",
+   "action": "AUTH-ACT-DELETE-BRANCH",
+   "class": "AUTH-CLASS-PRACTICE-REPOS",
+   "source": "RULE-5"
+  },
+  {
    "id": "AUTH-LINE-SUPPLIER-READ",
    "title": "CC reads the supplier's current state from GitHub",
    "relation": "Line",
@@ -571,6 +933,50 @@
    "source": "briefs/2026-10-01-svm-tranche-3/574-CC-219-standing-line.md"
   },
   {
+   "id": "AUTH-LINE-PROBE-RESTORE",
+   "title": "The owner's line on the probe's automatic rollback: its workflow may put back an earlier production deployment of that one project",
+   "relation": "Line",
+   "text": "Land the authority rows for the probe's automatic rollback as CC's 1331 brief drafts them and DT2 reads them, so that its workflow on okf-probe-inside alone may put back an earlier production deployment of that one project, when its health check fails or when a person runs it by hand, with its workflow folder and its script's folder joining the plane class and its gaps declared, which serves my intent to maintain theory and evidence as parallel, coupled efforts -- David Facer 11/23/2026",
+   "date": "2026-11-23",
+   "given_to": "AUTH-ACTOR-CC",
+   "grants": [
+    {
+     "action": "AUTH-ACT-RESTORE",
+     "surface": "AUTH-SURF-PROBE"
+    }
+   ],
+   "excludes": [],
+   "source": "briefs/2026-10-01-svm-tranche-3/1331-CC-270-rows-line.md"
+  },
+  {
+   "id": "AUTH-LINE-ROUTINE-FILING",
+   "title": "The owner's routine-filing line: CC pushes filed briefs, its own act brief and the generated pages and records without a line of its own",
+   "relation": "Line",
+   "text": "Ratify DT2's 327 brief's rule for routine filings, which serves my intent to guarantee the governance plane: CC pushes filed briefs, its own brief for the act and the generated pages without a line of its own, touching nothing protected and naming the work item; every other push to the practice's records keeps my line -- David Facer 10/23/2026",
+   "date": "2026-10-23",
+   "given_to": "AUTH-ACTOR-CC",
+   "grants": [
+    {
+     "action": "AUTH-ACT-PUSH",
+     "surface": "AUTH-SURF-CORPUS-BRIEFS"
+    },
+    {
+     "action": "AUTH-ACT-PUSH",
+     "surface": "AUTH-SURF-CORPUS-DOCS"
+    },
+    {
+     "action": "AUTH-ACT-PUSH",
+     "surface": "AUTH-SURF-CORPUS-GENERATED"
+    }
+   ],
+   "excludes": [
+    "AUTH-CLASS-SETTINGS",
+    "AUTH-CLASS-PLANE",
+    "AUTH-CLASS-RATIFIED"
+   ],
+   "source": "briefs/2026-10-01-svm-tranche-3/327-DT2-routine-filing-rule.md"
+  },
+  {
    "id": "AUTH-REQ-SITE-WORKITEM",
    "title": "A push to the site needs a Work-Item line",
    "relation": "Requires",
@@ -594,56 +1000,17 @@
    "relation": "Requires",
    "action": "AUTH-ACT-PUSH",
    "surface": "AUTH-SURF-CORPUS",
-   "condition": "the owner's line for that push, in the act's record, until piece 7's push rule is proved on the corpus",
+   "condition": "the owner's line for that push, in the act's record, until piece 7's push rule is proved on the corpus, unless every file the push carries is within AUTH-LINE-ROUTINE-FILING's grants and outside its exclusions, and each commit names its Work Item (327-DT2, OKF-TOGAF#228)",
    "source": "briefs/2026-10-01-svm-tranche-3/579-CC-219-piece4-decided.md"
   },
   {
-   "id": "AUTH-COVERS-CR023",
-   "title": "DT's read-only credential covers a push to the corpus repository",
-   "relation": "Covers",
-   "control": "RULE-5",
-   "action": "AUTH-ACT-PUSH",
-   "surface": "AUTH-SURF-CORPUS",
-   "source": "RULE-5"
-  },
-  {
-   "id": "AUTH-COVERS-RING3",
-   "title": "The Work Item deploy gate covers a push to the site",
-   "relation": "Covers",
-   "control": "TC-55",
-   "action": "AUTH-ACT-PUSH",
-   "surface": "AUTH-SURF-SITE",
-   "source": "A13"
-  },
-  {
-   "id": "AUTH-NOTMED-GATE-SELF",
-   "title": "At deploy, a change to the gate is judged by the changed gate",
-   "relation": "NotMediated",
-   "point": "the deploy gate",
-   "path": "the gate's own files, in the repository it guards",
-   "reason": "The gate lives in the repository it guards and the build runs the new gate, so a gate that dropped a check would pass its own change. The filing act rebuilds every commit touching the gate with its parent's gate and records whether that one would have refused; the commit that installs a gate has no parent gate and is recorded as ungated by construction, its clearance and Owner-Line checked after the fact. Lifts when piece 7's rule holds the gate's files.",
-   "decision": "briefs/2026-10-01-svm-tranche-3/282-DT2-gate-points.md",
-   "source": "briefs/2026-10-01-svm-tranche-3/282-DT2-gate-points.md"
-  },
-  {
-   "id": "AUTH-NOTMED-GATE-WIRING",
-   "title": "At deploy, wiring that stops the gate or ignores its refusal is past any gate",
-   "relation": "NotMediated",
-   "point": "the deploy gate",
-   "path": "the build's wiring: package.json's build scripts, vercel.json's build settings, and the hosting project's own build command",
-   "reason": "The gate refuses a change to the wiring without Owner-Line only where the changed wiring still runs the gate and honours its exit. Wiring that stops the gate, or ignores its refusal, is never judged by it; nor is the hosting project's own build command, the owner's account setting, forbidden to CC and out of the rows' reach. The filing act checks every deployed commit's wiring after the fact and records any other as gate not run.",
-   "decision": "briefs/2026-10-01-svm-tranche-3/283-DT2-build-wiring.md",
-   "source": "briefs/2026-10-01-svm-tranche-3/283-DT2-build-wiring.md"
-  },
-  {
-   "id": "AUTH-NOTMED-HISTORY",
-   "title": "At deploy, history rewritten before the cleared base is not seen",
-   "relation": "NotMediated",
-   "point": "the deploy gate",
-   "path": "the branch's history before the clearance's base",
-   "reason": "The build sees the commit it ships and that commit's history. Every file changed from the cleared base is checked, and a base not in that history is refused; what the branch held before a force-push is not in the build's copy, so a non-fast-forward is not seen there. Lifts when piece 7's rule refuses a non-fast-forward at the push.",
-   "decision": "briefs/2026-10-01-svm-tranche-3/577-CC-219-piece4-plan.md",
-   "source": "briefs/2026-10-01-svm-tranche-3/577-CC-219-piece4-plan.md"
+   "id": "AUTH-REQ-PROBE-RESTORE",
+   "title": "A restore on the probe is made by the rollback workflow's own run",
+   "relation": "Requires",
+   "action": "AUTH-ACT-RESTORE",
+   "surface": "AUTH-SURF-PROBE",
+   "condition": "made by the rollback workflow's run on main, after its check failed what is serving or when a person runs it by hand",
+   "source": "briefs/2026-10-01-svm-tranche-3/758-DT2-270-fixes-and-rows.md"
   },
   {
    "id": "AUTH-RULE-UNDER-SELF",

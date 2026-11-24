@@ -110,6 +110,11 @@ t('the record names the files it read by count, not by name', () => { const d = 
 t('the real store: a gate file without Owner-Line is refused as excluded', () => { const st = require('./store.json'); const d = decide(input({ store: st, changed: () => ['gate/gate.js'] })); return d.outcome === 'refused' && rules(d).includes('excluded'); });
 t('the real store: the settings stand-in is refused as forbidden, even with Owner-Line', () => { const st = require('./store.json'); const d = decide(input({ store: st, message: msg(cleared(), 'Owner-Line: 590-CC'), changed: () => ['.claude/settings.json'] })); return d.outcome === 'refused' && rules(d).includes('forbidden'); });
 
+// OKF-TOGAF#270 (754-DT2 choice 7, 758-DT2): the rollback's workflow and the script it runs.
+t('the real store: a workflow file without Owner-Line is refused as excluded', () => { const st = require('./store.json'); const d = decide(input({ store: st, changed: () => ['.github/workflows/auto-rollback.yml'] })); return d.outcome === 'refused' && rules(d).includes('excluded'); });
+t('the real store: the rollback script without Owner-Line is refused as excluded, and allowed with it', () => { const st = require('./store.json'); const d = decide(input({ store: st, changed: () => ['rollback/run.js'] })); return d.outcome === 'refused' && rules(d).includes('excluded') && decide(input({ store: st, message: msg(cleared(), 'Owner-Line: 590-CC'), changed: () => ['rollback/lib/rollback.js', '.github/workflows/auto-rollback.yml'] })).outcome === 'allowed'; });
+t('the real store: an ordinary file is allowed', () => decide(input({ store: require('./store.json'), changed: () => ['README.md', 'well.json'] })).outcome === 'allowed');
+
 // The watching mode (OKF-TOGAF#219 recorder, 628-CC with 308-DT2's additions):
 // set to "record", the gate writes every decision down and ends the build
 // normally; with no setting, or any other, it refuses exactly as before.

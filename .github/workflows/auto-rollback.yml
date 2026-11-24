@@ -1,0 +1,63 @@
+# The automatic rollback's workflow (OKF-TOGAF#270; plan 1322-CC, rulings 754-DT2 to 756-DT2).
+# SOURCE OF RECORD: OKF-TOGAF's tools/gates/auto-rollback/; the probe target carries it as
+# .github/workflows/auto-rollback.yml.
+#
+# It runs when the provider's status on a commit turns to success, and by hand. It asks to read
+# the contents and this repository's own runs, and nothing else. The key sits in the environment
+# named rollback, which the owner limits to the main branch and fills. No text of the event
+# reaches a command: each value is passed as an environment variable and checked by the script.
+# One run acts at a time, and a waiting one is kept. Each action is named by its full commit.
+name: auto-rollback
+on:
+  status:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: check what is serving, or put back the one before it
+        type: choice
+        options: [check, restore]
+        default: check
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: auto-rollback
+  queue: max
+jobs:
+  rollback:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.context == 'Vercel' && github.event.state == 'success' && github.event.sender.login == 'vercel[bot]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: rollback
+    env:
+      EVENT_NAME: ${{ github.event_name }}
+      EVENT_SHA: ${{ github.event.sha }}
+      EVENT_CONTEXT: ${{ github.event.context }}
+      EVENT_STATE: ${{ github.event.state }}
+      EVENT_CREATOR: ${{ github.event.sender.login }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Check what is serving
+        id: check
+        if: github.event_name == 'status' || inputs.mode == 'check'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ROLLBACK_KEY: ${{ secrets.ROLLBACK_KEY }}
+        run: node rollback/run.js check
+      - name: Keep the mark of a failed check
+        if: steps.check.outputs.verdict == 'failed'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: failed-${{ steps.check.outputs.commit }}
+          path: mark/failed.txt
+      - name: Put back the latest deployment that served and has not failed
+        if: (!cancelled() && steps.check.outputs.verdict == 'failed') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'restore')
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ROLLBACK_KEY: ${{ secrets.ROLLBACK_KEY }}
+        run: node rollback/run.js restore

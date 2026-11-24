@@ -9,7 +9,9 @@
 //
 // It reads one variable by name, the commit's id, and runs git on the build's
 // own checkout. It makes no network call, lists no environment and prints no
-// commit message. It writes public/discovery.json, which the deploy serves.
+// commit message. It writes public/discovery.json, which the deploy serves, and
+// public/health.json, the commit this deploy is of and what well.json says of
+// it, which the automatic rollback's check reads (OKF-TOGAF#270).
 "use strict";
 const fs = require("fs");
 const path = require("path");
@@ -39,4 +41,7 @@ const out = {
 fs.mkdirSync(path.join(process.cwd(), "public"), { recursive: true });
 fs.writeFileSync(path.join(process.cwd(), "public", "discovery.json"), JSON.stringify(out, null, 2) + "\n");
 fs.writeFileSync(path.join(process.cwd(), "public", "index.html"), "<!doctype html><title>okf-probe</title><p>Throwaway target for the authority probe. Nothing real here.</p>\n");
+let well = null;
+try { well = JSON.parse(fs.readFileSync(path.join(process.cwd(), "well.json"), "utf8")).well === true; } catch (e) { well = false; }
+fs.writeFileSync(path.join(process.cwd(), "public", "health.json"), JSON.stringify({ commit: varSha || out.head, well }) + "\n");
 console.log("discovery written");
