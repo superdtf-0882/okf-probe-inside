@@ -1,9 +1,9 @@
 {
   "source": "superdtf-0882/OKF-TOGAF",
-  "revision": "dd681b30cba6fee68a74874d90d9b80ea520a4e4",
+  "revision": "f64f6b63a46f03733e0a047f704523c7673656c5",
   "files": {
     "tools/gates/auto-rollback/auto-rollback.yml": "08589c2cb2271fcd599ce5961f899a666dcbb2c826c0310c1272ecd2ccc07b2d",
-    "tools/gates/auto-rollback/run.js": "28850d64fd7e50f3aba5c0e2634f2a0ccaf24afffc83813ecb54d683d06d1044",
+    "tools/gates/auto-rollback/run.js": "3f77f11f95f4471a43bbd998ead09af65684a5f3d9eb30f7eafd2d1e5ed6c8e3",
     "tools/lib/rollback.js": "55fc4ca27f969cf1bde4a125dd48abbfcb9e82e6b90dbf61e1133c9b858f99ee"
   }
 }

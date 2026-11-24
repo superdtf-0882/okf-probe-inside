@@ -107,6 +107,11 @@ async function all(getPage, field) {
   return null;
 }
 
+// The provider's code for a refusal, and none of its text: the target's run log is public.
+function codeOf(body) {
+  try { const c = JSON.parse(body).error.code; return typeof c === 'string' && /^[a-z0-9_-]{1,60}$/i.test(c) ? c : ''; } catch (e) { return ''; }
+}
+
 function answerer(env, fetchFn) {
   const key = env.ROLLBACK_KEY;
   const api = (p) => 'https://api.vercel.com' + p + (p.includes('?') ? '&' : '?') + 'slug=' + TEAM;
@@ -147,7 +152,7 @@ function answerer(env, fetchFn) {
       if (!p || !p.id) return { ok: false, why: 'the project could not be read with this key' };
       try {
         const r = await fetchFn(api('/v1/projects/' + p.id + '/rollback/' + q.id), { method: 'POST', headers: vh, redirect: 'manual', signal: AbortSignal.timeout(30000) });
-        return r.ok ? { ok: true } : { ok: false, why: String(r.status) + ' ' + (await r.text()).slice(0, 300) };
+        return r.ok ? { ok: true } : { ok: false, why: (String(r.status) + ' ' + codeOf(await r.text())).trim() };
       } catch (e) { return { ok: false, why: 'the call did not complete' }; }
     },
     onMain: async (sha) => { const c = await gh('/compare/' + BRANCH + '...' + sha); return !!c && (c.status === 'identical' || c.status === 'behind'); },
@@ -230,6 +235,10 @@ async function selfTest() {
   const rr = await an.restore({ id: 'd1' });
   const post = calls.find((c) => c.o.method === 'POST');
   ok(rr.ok === true && post && /\/v1\/projects\/prj_1\/rollback\/d1\?slug=/.test(post.u) && post.o.redirect === 'manual', 'the restore call follows no redirect (757-DT2)', post && post.o.redirect);
+  // [762-DT2: the target's run log is public; a refusal gives the status and the provider's code, not its text.]
+  const said = async (status, b) => (await answerer({ ROLLBACK_KEY: 'made-up-key' }, async (u) => (u.includes('/rollback/') ? { status, ok: false, text: async () => b } : fake(u))).restore({ id: 'd1' })).why;
+  const no402 = await said(402, J({ error: { code: 'payment_required', message: 'a message, with team_1 in it' } })), noise = await said(500, '<html>an answer that is not JSON</html>'), odd = await said(403, J({ error: { code: 'a code with words in it' } }));
+  ok(no402 === '402 payment_required' && noise === '500' && odd === '403', "a refused restore says the provider's status and code, and none of its text (762-DT2)", J([no402, noise, odd]));
   ok(J(lib.failedMarks(await an.marks(), OPTS)) === J([A]) && !calls.some((c) => /\/workflows\//.test(c.u)), 'marks are read by their own runs, with no list of runs (757-DT2)');
   await an.page(); await an.serving(); await an.onMain(A);
   const holds = (c, k) => J(c.o.headers || {}).includes(k) || c.u.includes(k);
