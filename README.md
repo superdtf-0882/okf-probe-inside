@@ -6,3 +6,4 @@ Attempt 2: no clearance line.
 Attempt 3: the wrong tree named.
 Attempt 7: a base not in history.
 Attempt 8: marked touched.
+Rollback trial 3: a good deploy made while a restore holds.
